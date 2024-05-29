@@ -39,9 +39,9 @@
                 />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm(ruleFormRef)" :loading="isLoading"> Sign Up </el-button>
+                <el-button type="primary" @click="submitForm(ruleFormRef)" :loading="store.state.loading.isLoading"> Sign Up </el-button>
                 <div class="flex-grow"></div>
-                <el-button type="primary" link><router-link to="/login">Log In</router-link> </el-button>
+                <el-button type="primary" link><router-link :to="{ name: 'login' }">Log In</router-link> </el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -50,12 +50,12 @@
 <script setup lang="ts">
 import { type FormInstance, type FormRules } from 'element-plus'
 
-const router = useRouter()
+import { ToastType } from '@/types'
+import { showToast } from '@/utils/toastHelper'
+
 const store = useStore()
 
 const ruleFormRef = ref<FormInstance>()
-
-let isLoading = ref<boolean>(false)
 
 const validateEmail = (rule: any, value: string, callback: any) => {
     if (value === '') {
@@ -104,15 +104,22 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
 
     formEl.validate(async (valid) => {
-        isLoading.value = true
+        store.state.loading.isLoading = true
 
         if (valid) {
             const name = ruleForm.email.split('@')[0]
+
+            try {
+                const response = await store.dispatch('auth/register', { ...ruleForm, name })
+                showToast(response.message, ToastType.SUCCESS)
+            } catch (error: any) {
+                showToast(Object.values(error)[0] as string, ToastType.ERROR)
+            }
         } else {
             console.log('error submit!')
         }
 
-        isLoading.value = false
+        store.state.loading.isLoading = false
     })
 }
 </script>

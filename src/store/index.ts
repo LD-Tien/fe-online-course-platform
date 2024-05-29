@@ -1,5 +1,7 @@
 import { Store, createStore } from 'vuex'
-import authModule from './modules/auth'
+
+import authModule from '@/store/modules/auth'
+import loading from '@/store/modules/loading'
 import type { AuthState } from '@/types'
 
 export interface RootState {
@@ -9,7 +11,8 @@ export interface RootState {
 const store: Store<RootState> = createStore({
     modules: {
         auth: authModule,
-    },
+        loading
+    }
 })
 
 export default store

@@ -1,8 +1,8 @@
 <template>
     <div class="login-form">
-        <div style="display: block; width: 175px; margin: auto">
+        <router-link :to="{ name: 'home' }" style="display: block; width: 175px; margin: auto">
             <base-icon name="logo-light" />
-        </div>
+        </router-link>
         <h2 class="text-2xl">Log In</h2>
         <el-form
             size="large"
@@ -29,11 +29,11 @@
                 />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm(ruleFormRef)" :loading="isLoading"> Log In </el-button>
-                <el-button type="primary" link><router-link to="/register">Sign Up</router-link> </el-button>
+                <el-button type="primary" @click="submitForm(ruleFormRef)" :loading="store.state.loading.isLoading"> Log In </el-button>
+                <el-button type="primary" link><router-link :to="{ name: 'register' }">Sign Up</router-link> </el-button>
                 <div class="flex-grow"></div>
                 <el-button link type="primary">
-                    <RouterLink to="/forgot-password"> Forgot your password? </RouterLink>
+                    <RouterLink :to="{ name: 'forgot-password' }"> Forgot your password? </RouterLink>
                 </el-button>
             </el-form-item>
         </el-form>
@@ -48,14 +48,13 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ToastType } from '@/types'
+import { showToast } from '@/utils/toastHelper'
 import type { FormInstance, FormRules } from 'element-plus'
-import { RouterLink, useRouter } from 'vue-router'
-import { callLogin } from '@/api/api'
 
 const router = useRouter()
+const store = useStore()
 const ruleFormRef = ref<FormInstance>()
-let isLoading = ref<boolean>(false)
 
 const validateEmail = (rule: any, value: string, callback: any) => {
     if (value === '') {
@@ -89,23 +88,18 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate(async (valid) => {
-        isLoading.value = true
+        store.state.loading.isLoading = true
         if (valid) {
-            await callLogin(ruleForm)
-                .then((res) => {
-                    ElMessage({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    localStorage.setItem('access_token', res.data.accessToken)
-                    router.push('/')
-                })
-                .catch((err) => console.log('==> Error callLogin: ', err))
-            console.log('submit!')
+            try {
+                await store.dispatch('auth/login', ruleForm)
+                router.push({ name: 'home', replace: true })
+            } catch (error: any) {
+                showToast(Object.values(error.message)[0] as string, ToastType.ERROR)
+            }
         } else {
             console.log('error submit!')
         }
-        isLoading.value = false
+        store.state.loading.isLoading = false
     })
 }
 </script>

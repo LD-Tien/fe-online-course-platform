@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import CKEditor from '@ckeditor/ckeditor5-vue'
+import Toast from 'vue-toastification'
 import store from '@/store'
 import VueVideoPlayer from '@videojs-player/vue'
 
@@ -8,6 +9,7 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import 'element-plus/theme-chalk/display.css'
 import '@/assets/main.css'
 import 'video.js/dist/video-js.css'
+import 'vue-toastification/dist/index.css'
 
 import App from './App.vue'
 import router from './router'
@@ -22,5 +24,6 @@ app.use(store)
 app.use(router)
 app.use(CKEditor)
 app.use(VueVideoPlayer)
+app.use(Toast)
 
 app.mount('#app')

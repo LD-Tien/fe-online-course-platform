@@ -51,6 +51,7 @@ instance.interceptors.response.use(
         return response.data
     },
     (error: AxiosError) => {
+        console.log(error)
         // network error
         const isFirst = localStorage.getItem('toastNetwork')
 

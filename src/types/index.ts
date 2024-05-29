@@ -1,3 +1,3 @@
-// export * from './vuex'
-export * from './common'
-export * from './toast-message'
+export * from '@/types/vuex'
+export * from '@/types/common'
+export * from '@/types/toast-message'

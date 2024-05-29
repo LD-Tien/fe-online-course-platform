@@ -20,7 +20,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm(ruleFormRef)"> Request password reset </el-button>
-                <el-button type="primary" link><router-link to="/login" replace>Back to sign in</router-link> </el-button>
+                <el-button type="primary" link><router-link :to="{ name: 'login' }" replace>Back to login</router-link> </el-button>
             </el-form-item>
         </el-form>
     </div>

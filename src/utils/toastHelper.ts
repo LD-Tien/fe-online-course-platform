@@ -1,6 +1,6 @@
 import { useToast, TYPE, POSITION } from 'vue-toastification'
 import BaseToastMessage from '@/components/atoms/BaseToastMessage.vue'
-import { ShowToastFunction, ShowToastImportFunction, ToastType } from '@/types'
+import type { ShowToastFunction, ShowToastImportFunction, ToastType } from '@/types'
 
 export const showToast: ShowToastFunction = (message: string | object, toastType: ToastType) => {
     // for case network_error
