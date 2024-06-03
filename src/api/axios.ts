@@ -26,7 +26,7 @@ import { ToastType, type ResponseError } from '@/types'
 
 const instance = axios.create({
     baseURL: `${import.meta.env.VITE_API_BASE_URL}/${import.meta.env.VITE_API_PREFIX}`,
-    timeout: 10000,
+    timeout: 20000,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -119,9 +119,6 @@ instance.interceptors.response.use(
 
                 return
         }
-
-        // Show generic error message
-        return Promise.reject(error)
     }
 )
 

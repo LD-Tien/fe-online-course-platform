@@ -8,7 +8,7 @@
         <base-icon class="self-center" name="logo-light" />
         <el-menu-item index="1">
             <el-icon><icon-menu /></el-icon>
-            <router-link :to="{ name: 'moderation-dashboard' }"><span>Dashboard</span></router-link>
+            <router-link :to="{ name: 'moderator-dashboard' }"><span>Dashboard</span></router-link>
         </el-menu-item>
         <el-menu-item index="2">
             <el-icon><icon-menu /></el-icon>

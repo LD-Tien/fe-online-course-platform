@@ -16,9 +16,15 @@
             class="demo-ruleForm"
         >
             <el-form-item label="Email" prop="email">
-                <el-input prefix-icon="Message" v-model="ruleForm.email" type="email" autocomplete="off" placeholder="enter your email" />
+                <el-input
+                    prefix-icon="Message"
+                    v-model="ruleForm.email"
+                    type="email"
+                    autocomplete="off"
+                    placeholder="enter your email"
+                />
             </el-form-item>
-            <el-form-item label="Password" prop="pass">
+            <el-form-item label="Password" prop="password">
                 <el-input
                     prefix-icon="Lock"
                     v-model="ruleForm.password"
@@ -28,10 +34,10 @@
                     show-password
                 />
             </el-form-item>
-            <el-form-item label="Confirm password" prop="checkPass">
+            <el-form-item label="Confirm password" prop="password_confirmation">
                 <el-input
                     prefix-icon="Lock"
-                    v-model="ruleForm.checkPass"
+                    v-model="ruleForm.password_confirmation"
                     type="password"
                     autocomplete="off"
                     placeholder="enter your confirm password"
@@ -39,9 +45,17 @@
                 />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm(ruleFormRef)" :loading="store.state.loading.isLoading"> Sign Up </el-button>
+                <el-button
+                    type="primary"
+                    @click="submitForm(ruleFormRef)"
+                    :loading="store.state.loading.isLoading"
+                >
+                    Sign Up
+                </el-button>
                 <div class="flex-grow"></div>
-                <el-button type="primary" link><router-link :to="{ name: 'login' }">Log In</router-link> </el-button>
+                <el-button type="primary" link>
+                    <router-link :to="{ name: 'login' }">Log In</router-link>
+                </el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -52,15 +66,20 @@ import { type FormInstance, type FormRules } from 'element-plus'
 
 import { ToastType } from '@/types'
 import { showToast } from '@/utils/toastHelper'
+import store from '@/store'
 
-const store = useStore()
+const router = useRouter()
 
 const ruleFormRef = ref<FormInstance>()
 
 const validateEmail = (rule: any, value: string, callback: any) => {
     if (value === '') {
         callback(new Error('Please input the email'))
-    } else if (!value.toLocaleLowerCase().match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+    } else if (
+        !value
+            .toLocaleLowerCase()
+            .match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)
+    ) {
         callback(new Error('Please entered valid format email'))
     }
     callback()
@@ -70,9 +89,9 @@ const validatePass = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('Please input the password'))
     } else {
-        if (ruleForm.checkPass !== '') {
+        if (ruleForm.password_confirmation !== '') {
             if (!ruleFormRef.value) return
-            ruleFormRef.value.validateField('checkPass')
+            ruleFormRef.value.validateField('password_confirmation')
         }
         callback()
     }
@@ -91,12 +110,12 @@ const validatePass2 = (rule: any, value: any, callback: any) => {
 const ruleForm = reactive({
     email: '',
     password: '',
-    checkPass: ''
+    password_confirmation: ''
 })
 
 const rules = reactive<FormRules<typeof ruleForm>>({
     password: [{ validator: validatePass, trigger: 'blur' }],
-    checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+    password_confirmation: [{ validator: validatePass2, trigger: 'blur' }],
     email: [{ validator: validateEmail, trigger: 'blur' }]
 })
 
@@ -111,9 +130,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
             try {
                 const response = await store.dispatch('auth/register', { ...ruleForm, name })
-                showToast(response.message, ToastType.SUCCESS)
+                store.commit('auth/setUserProfile', response.data)
+                router.push({ name: 'verify-email-notification' })
             } catch (error: any) {
-                showToast(Object.values(error)[0] as string, ToastType.ERROR)
+                showToast(Object.values(error)[0][0] as string, ToastType.ERROR)
             }
         } else {
             console.log('error submit!')

@@ -1,9 +1,23 @@
 import axios from '@/api/axios'
 import type { Category } from './types'
 
-export const getCategoriesPaginate = async () => {
+export const getCategoryByQuery = async ({
+    filters,
+    sorts = { created_at: 'desc' },
+    search = { searchText: '' },
+    page = 1,
+    limit = 10
+}: any) => {
     try {
-        return await axios.get('/admin/categories')
+        return await axios.get('/admin/categories', {
+            params: {
+                filters,
+                sorts,
+                search,
+                page,
+                limit
+            }
+        })
     } catch (error) {
         return Promise.reject(error)
     }

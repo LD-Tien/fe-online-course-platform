@@ -1,5 +1,12 @@
 <template>
-    <el-menu :default-active="activeIndex" mode="horizontal" :ellipsis="false" :popper-offset="16" @select="handleSelect" style="padding: 0 20px">
+    <el-menu
+        :default-active="activeIndex"
+        mode="horizontal"
+        :ellipsis="false"
+        :popper-offset="16"
+        @select="handleSelect"
+        style="padding: 0 20px"
+    >
         <el-space>
             <router-link :to="{ name: 'home' }"><BaseIcon name="logo-light" /></router-link>
             <el-menu-item index="1" class="hidden-sm-and-down">Home</el-menu-item>
@@ -15,18 +22,39 @@
                     <el-menu-item index="2-4-3">item three</el-menu-item>
                 </el-sub-menu>
             </el-sub-menu>
-            <el-input style="width: 300px" v-model="search" size="default" placeholder="Search" :prefix-icon="Search" />
+            <el-input
+                style="width: 300px"
+                v-model="search"
+                size="default"
+                placeholder="Search"
+                :prefix-icon="Search"
+            />
         </el-space>
-        <el-space wrap size="large" class="ml-auto">
+
+        <el-space wrap class="ml-auto" trigger="click">
             <el-space :size="20">
-                <el-button link>
+                <el-button
+                    v-if="!(store.state.auth.user?.role === UserRole.INSTRUCTOR)"
+                    link
+                    type="text"
+                    @click="
+                        $router.push({
+                            name: store.state.auth.access_token ? 'register-instructor' : 'login'
+                        })
+                    "
+                    index="3"
+                    class="!ml-auto hidden-sm-and-down"
+                >
+                    Become an instructor
+                </el-button>
+                <el-button link v-if="store.state.auth.access_token">
                     <el-badge :value="3" class="item">
                         <el-icon :size="20">
                             <Bell />
                         </el-icon>
                     </el-badge>
                 </el-button>
-                <el-button link>
+                <el-button link v-if="store.state.auth.access_token">
                     <el-badge :value="3" class="item">
                         <el-icon :size="20">
                             <ShoppingCart />
@@ -35,20 +63,37 @@
                 </el-button>
             </el-space>
             <el-divider direction="vertical" />
-            <el-dropdown v-if="store.state.auth.access_token" size="large" trigger="click">
+            <el-dropdown size="large" v-if="store.state.auth.access_token">
                 <el-button link>
-                    <el-avatar :size="35" src="https://i.docln.net/lightnovel/users/ua22791-40000776-a21c-4ddd-9f3f-81225dca585a.jpg" />
+                    <el-avatar :size="35" :src="avatarPreviewSrc" />
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
                         <el-dropdown-item>Profile account</el-dropdown-item>
                         <el-dropdown-item>My learning</el-dropdown-item>
-                        <el-dropdown-item><router-link :to="{ name: 'register-instructor' }">Become an instructor</router-link></el-dropdown-item>
-                        <el-dropdown-item divided><el-button type="danger" link @click="handleLogout">Log Out</el-button></el-dropdown-item>
+                        <el-dropdown-item
+                            v-if="!(store.state.auth.user?.role === UserRole.INSTRUCTOR)"
+                        >
+                            <router-link :to="{ name: 'register-instructor' }">
+                                Become an instructor
+                            </router-link>
+                        </el-dropdown-item>
+                        <el-dropdown-item
+                            v-if="store.state.auth.user?.role === UserRole.INSTRUCTOR"
+                        >
+                            <router-link :to="{ name: 'instructor-dashboard' }">
+                                Instructor dashboard
+                            </router-link>
+                        </el-dropdown-item>
+                        <el-dropdown-item divided>
+                            <el-button type="danger" link @click="handleLogout">
+                                Log Out
+                            </el-button>
+                        </el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-            <el-space v-else>
+            <el-space v-if="!store.state.auth.access_token">
                 <el-button type="primary" size="default">
                     <RouterLink :to="{ name: 'login' }">Log In</RouterLink>
                 </el-button>
@@ -63,17 +108,26 @@
 <script lang="ts" setup>
 import { Search, ShoppingCart, Bell } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import store from '@/store'
 import { useRouter } from 'vue-router'
 import { showToast } from '@/utils/toastHelper'
 import { ToastType } from '@/types'
+import { UserRole } from '@/api/modules/auth/types'
 
 const router = useRouter()
-const store = useStore()
 const search = ''
 const activeIndex = ref('1')
+
+const avatarPreviewSrc = computed(() =>
+    store.state.auth.user?.profile_photo_url
+        ? import.meta.env.VITE_API_BASE_URL + store.state.auth.user?.profile_photo_url
+        : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+)
+
 const handleSelect = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
+
 const handleLogout = async () => {
     try {
         await store.dispatch('auth/logout')

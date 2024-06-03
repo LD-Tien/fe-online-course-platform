@@ -7,9 +7,21 @@ import type {
 
 import axios from '@/api/axios'
 
+const headers = {
+    'Content-Type': 'multipart/form-data'
+}
+
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
     try {
         return await axios.post('/register', data)
+    } catch (error) {
+        return Promise.reject(error)
+    }
+}
+
+export const registerInstructor = async (formData: any): Promise<RegisterResponse> => {
+    try {
+        return await axios.post('/register-instructor', formData, { headers })
     } catch (error) {
         return Promise.reject(error)
     }

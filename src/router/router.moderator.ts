@@ -7,7 +7,7 @@ const instructorRouter: Array<RouteRecordRaw> = [
         children: [
             {
                 path: '',
-                name: 'moderation-dashboard',
+                name: 'moderator-dashboard',
                 component: () => import('@/views/admin/DashboardView.vue')
             },
             {

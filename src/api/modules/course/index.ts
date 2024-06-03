@@ -4,7 +4,20 @@ import type { Course } from './types'
 
 export const getCoursesPaginate = async () => {
     try {
-        return await axios.get('/instructor/courses')
+        return await axios.get('/instructor/courses', {
+            params: {
+                filters: {
+                    user_id: ['=', 1],
+                    price: ['>', 1]
+                },
+                sorts: {
+                    course_name: 'desc',
+                    created_at: 'asc'
+                },
+                page: 1,
+                limit: 2
+            }
+        })
     } catch (error) {
         return Promise.reject(error)
     }

@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
+import { CheckUserJustRegistered } from '@/middlewares/CheckUserJustRegistered'
 
 const authRouter: Array<RouteRecordRaw> = [
     {
@@ -18,22 +19,29 @@ const authRouter: Array<RouteRecordRaw> = [
                 component: () => import('@/views/auth/RegisterView.vue')
             },
             {
-                path: '/register-instructor',
+                path: 'register-instructor',
                 name: 'register-instructor',
                 component: () => import('@/views/auth/RegisterInstructorView.vue')
             },
             {
-                path: '/verify-email-notification',
-                name: 'verify-email',
+                path: 'verify-email-notification',
+                name: 'verify-email-notification',
+                beforeEnter: CheckUserJustRegistered,
                 component: () => import('@/views/auth/VerifyEmailNotificationView.vue')
             },
             {
-                path: '/forgot-password',
+                path: 'verify-email-result/:result',
+                name: 'verify-email-result',
+
+                component: () => import('@/views/auth/VerifyEmailResult.vue')
+            },
+            {
+                path: 'forgot-password',
                 name: 'forgot-password',
                 component: () => import('@/views/auth/ForgotPasswordView.vue')
             },
             {
-                path: '/reset-password',
+                path: 'reset-password',
                 name: 'reset-password',
                 component: () => import('@/views/auth/ResetPasswordView.vue')
             }

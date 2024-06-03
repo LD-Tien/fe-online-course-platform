@@ -1,10 +1,30 @@
 <template>
-    <div v-if="store.state.loading.isLoading">
-        <el-skeleton :rows="5" animated />
-    </div>
-    <div v-else class="flex flex-col gap-2 p-2">
+    <div class="flex flex-col gap-2 p-2">
         <div class="flex justify-end gap-2">
-            <el-button @click="dialogFormVisible = true" type="primary">Add New Course</el-button>
+            <div class="flex justify-between gap-3">
+                <el-input
+                    style="width: 240px"
+                    @input="handleSearchChange(searchText)"
+                    v-model="searchText"
+                    placeholder="Search by name, id"
+                >
+                    <template #prefix>
+                        <el-icon class="el-input__icon"><search /></el-icon>
+                    </template>
+                </el-input>
+                <el-pagination
+                    class="ml-auto"
+                    background
+                    :current-page="metaData.current_page"
+                    :page-count="metaData.last_page"
+                    :page-size="metaData.per_page"
+                    :total="metaData.total"
+                    @current-change="handleCurrentChange"
+                />
+                <el-button type="primary" @click="dialogFormVisible = true" small>
+                    Add New Course
+                </el-button>
+            </div>
             <el-dialog v-model="dialogFormVisible" title="Create course" width="500">
                 <el-form :model="createCourseForm">
                     <el-form-item label="Course name" label-with="140px">
@@ -80,7 +100,7 @@
 
 <script lang="ts" setup>
 import { getAllCategories } from '@/api/modules/category'
-import type { Category } from '@/api/modules/category/types'
+import type { Category, Meta } from '@/api/modules/category/types'
 import { createCourse, getCoursesPaginate } from '@/api/modules/course'
 import type { Course } from '@/api/modules/course/types'
 import dayjs from 'dayjs'
@@ -88,6 +108,7 @@ import dayjs from 'dayjs'
 const tableData = ref<Course[]>([])
 const categories = ref<Category[]>([])
 const dialogFormVisible = ref<boolean>(false)
+const metaData = reactive<Partial<Meta>>({})
 const createCourseForm = reactive<Course>({
     course_name: '',
     category_id: 0
@@ -95,15 +116,53 @@ const createCourseForm = reactive<Course>({
 const router = useRouter()
 const store = useStore()
 
-const handleClick = () => {
-    console.log('click')
-}
-
 const handleCreateCourse = async () => {
     dialogFormVisible.value = false
     const response: any = await createCourse(createCourseForm)
     tableData.value.push(response.data)
     router.push({ name: 'instructor-course-editor', params: { courseId: response.data.id } })
+}
+
+const handleCurrentChange = async (val: number) => {
+    store.dispatch('loading/setLoading')
+    try {
+        const response: any = await getCategoryByQuery({
+            page: val,
+            search: { searchText: searchText.value }
+        })
+        tableData.value = response.data
+        Object.assign(metaData, response.meta)
+    } catch (error) {
+        ElNotification({
+            title: 'Get category failed',
+            message: 'Get category failed. Please try again later.',
+            type: 'error',
+            position: 'bottom-right'
+        })
+    }
+    store.dispatch('loading/removeLoading')
+}
+
+const handleSearchChange = (searchText: string) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(async () => {
+        store.dispatch('loading/setLoading')
+        try {
+            const response: any = await getCategoryByQuery({
+                search: { searchText }
+            })
+            tableData.value = response.data
+            Object.assign(metaData, response.meta)
+        } catch (error) {
+            ElNotification({
+                title: 'Get category failed',
+                message: 'Get category failed. Please try again later.',
+                type: 'error',
+                position: 'bottom-right'
+            })
+        }
+        store.dispatch('loading/removeLoading')
+    }, 500)
 }
 
 onMounted(async () => {

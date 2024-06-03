@@ -1,6 +1,6 @@
 import type { Module } from 'vuex'
 
-import { login, logout, register } from '@/api/modules/auth'
+import { getUserProfile, login, logout, register } from '@/api/modules/auth'
 import type { AuthState } from '@/types/vuex'
 import type { RootState } from '@/store'
 
@@ -10,10 +10,16 @@ const authModule: Module<AuthState, RootState> = {
         access_token: null,
         user: null
     },
+    getters: {
+        getUserProfile(state) {
+            return state.user
+        }
+    },
     actions: {
         async login({ commit }, credentials) {
             try {
                 const response = await login(credentials)
+                window.localStorage.setItem('access_token', response.data.accessToken)
                 commit('setUserProfile', response.data.user)
                 commit('setAccessToken', response.data.accessToken)
 
@@ -35,6 +41,16 @@ const authModule: Module<AuthState, RootState> = {
                 commit('removeLoginSession')
 
                 return response
+            } catch (error) {
+                return Promise.reject(error)
+            }
+        },
+        async fetchUserProfile({ commit }) {
+            try {
+                const response = await getUserProfile()
+                const accessToken = window.localStorage.getItem('access_token')
+                commit('setUserProfile', response.data)
+                commit('setAccessToken', accessToken)
             } catch (error) {
                 return Promise.reject(error)
             }

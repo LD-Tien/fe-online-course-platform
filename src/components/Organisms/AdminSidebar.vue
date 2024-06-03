@@ -1,28 +1,23 @@
 <template>
-    <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo w-[200px]"
-        @open="handleOpen"
-        @close="handleClose"
-    >
-        <base-icon name="logo-light" />
-        <el-menu-item index="1">
+    <el-menu class="el-menu-vertical-demo w-[300px]" :default-active="activeIndex">
+        <img
+            class="p-3"
+            src="@/assets/img/logo-light.png"
+            @click="$router.push({ name: 'admin-dashboard' })"
+        />
+        <el-menu-item index="admin-dashboard" @click="$router.push({ name: 'admin-dashboard' })">
             <el-icon><icon-menu /></el-icon>
-            <router-link :to="{ name: 'admin-dashboard' }"><span>Dashboard</span></router-link>
+            <span>Dashboard</span>
         </el-menu-item>
-        <el-menu-item index="2">
+        <el-menu-item index="admin-category" @click="$router.push({ name: 'admin-category' })">
             <el-icon><icon-menu /></el-icon>
-            <router-link :to="{ name: 'admin-category' }"><span>Category</span></router-link>
+            <span>Category</span>
         </el-menu-item>
     </el-menu>
 </template>
 
 <script lang="ts" setup>
 import { Menu as IconMenu } from '@element-plus/icons-vue'
-const handleOpen = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
-}
+const route = useRoute()
+const activeIndex = ref<string>(route.name as string)
 </script>
