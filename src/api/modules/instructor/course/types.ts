@@ -14,3 +14,11 @@ export interface Course {
     created_at?: Date
     updated_at?: Date
 }
+
+export enum CourseStatus {
+    DRAFT = 1,
+    UNDER_REVIEW = 2,
+    PUBLISHED = 3,
+    UNPUBLISHED = 4,
+    REJECTED = 5
+}

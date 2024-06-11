@@ -1,103 +1,108 @@
 <template>
-    <div class="flex flex-col gap-2 p-3">
-        <div class="flex">
+    <div class="!h-full flex flex-col">
+        <div class="flex flex-col gap-2 p-3">
+            <div class="flex">
+                <el-button
+                    type="success"
+                    :loading="loadingModeration"
+                    class="w-full"
+                    @click="handleModerationCourse"
+                >
+                    Publish
+                </el-button>
+                <el-button
+                    type="danger"
+                    :loading="loadingModeration"
+                    class="w-full"
+                    @click="handleModerationCourse"
+                >
+                    Reject
+                </el-button>
+            </div>
             <el-button
-                type="success"
+                type="primary"
                 :loading="loadingModeration"
                 class="w-full"
                 @click="handleModerationCourse"
             >
-                Publish
-            </el-button>
-            <el-button
-                type="danger"
-                :loading="loadingModeration"
-                class="w-full"
-                @click="handleModerationCourse"
-            >
-                Reject
+                Moderation Course By AI
             </el-button>
         </div>
-        <el-button
-            type="primary"
-            :loading="loadingModeration"
-            class="w-full"
-            @click="handleModerationCourse"
-        >
-            Moderation Course By AI
-        </el-button>
-    </div>
-    <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo min-h-full p-2 border border-gray-200 w-[400px]"
-    >
-        <el-sub-menu v-for="item in props.modules" :key="item.id" :index="item.id + ''">
-            <template #title>
-                <div class="flex flex-col w-full">
-                    <span class="text-lg font-semibold">
-                        {{ item.ordinal_number }} - {{ item.name }}
-                    </span>
-                    <div class="flex gap-1">
-                        <span class="text-sm font-normal">
-                            Total video {{ item.lessons.length }} -
-                        </span>
-                        <span class="text-sm font-normal">
-                            Duration
-                            {{
-                                secondsToHHMMSS(
-                                    item.lessons.reduce(
-                                        (acc: number, cur: ModerationLesson) => acc + cur.duration,
-                                        0
-                                    )
-                                )
-                            }}
-                        </span>
-                    </div>
-                </div>
-            </template>
-            <el-menu-item
-                @click="
-                    $router.push({
-                        name: 'moderation-lesson',
-                        params: { moduleId: item.id, lessonId: lesson.id }
-                    })
-                "
-                v-for="lesson in item.lessons"
-                :key="lesson.id"
-                :index="lesson.id + ''"
-                class="flex justify-between"
+        <div class="overflow-y-auto grow !h-full">
+            <el-menu
+                default-active="2"
+                class="el-menu-vertical-demo min-h-full p-2 border border-gray-200 min-w-[400px]"
             >
-                <div class="flex items-center">
-                    {{ item.ordinal_number }}.{{ lesson.ordinal_number }}.
-                    <el-icon><VideoPlay /></el-icon>
-                    {{ lesson.name }} - {{ secondsToHHMMSS(lesson.duration) }}
-                </div>
-                <el-button
-                    v-if="lesson.analysis_video_result_json"
-                    link
-                    :type="
-                        Math.max(
-                            ...lesson.analysis_video_result_json.results.google.moderation.map(
-                                (item: any) => item.confidence
-                            )
-                        ) >= 0.8
-                            ? 'danger'
-                            : 'primary'
-                    "
-                    :icon="
-                        Math.max(
-                            ...lesson.analysis_video_result_json.results.google.moderation.map(
-                                (item: any) => item.confidence
-                            )
-                        ) >= 0.8
-                            ? 'WarnTriangleFilled'
-                            : 'InfoFilled'
-                    "
-                    @click.stop="showModerationResult(lesson)"
-                />
-            </el-menu-item>
-        </el-sub-menu>
-    </el-menu>
+                <el-sub-menu v-for="item in props.modules" :key="item.id" :index="item.id + ''">
+                    <template #title>
+                        <div class="flex flex-col w-full">
+                            <span class="text-lg font-semibold">
+                                {{ item.ordinal_number }} - {{ item.name }}
+                            </span>
+                            <div class="flex gap-1">
+                                <span class="text-sm font-normal">
+                                    Total video {{ item.lessons.length }} -
+                                </span>
+                                <span class="text-sm font-normal">
+                                    Duration
+                                    {{
+                                        secondsToHHMMSS(
+                                            item.lessons.reduce(
+                                                (acc: number, cur: ModerationLesson) =>
+                                                    acc + cur.duration,
+                                                0
+                                            )
+                                        )
+                                    }}
+                                </span>
+                            </div>
+                        </div>
+                    </template>
+                    <el-menu-item
+                        @click="
+                            $router.push({
+                                name: 'moderation-lesson',
+                                params: { moduleId: item.id, lessonId: lesson.id }
+                            })
+                        "
+                        v-for="lesson in item.lessons"
+                        :key="lesson.id"
+                        :index="lesson.id + ''"
+                        class="flex justify-between"
+                    >
+                        <div class="flex items-center">
+                            {{ item.ordinal_number }}.{{ lesson.ordinal_number }}.
+                            <el-icon><VideoPlay /></el-icon>
+                            {{ lesson.name }} - {{ secondsToHHMMSS(lesson.duration) }}
+                        </div>
+                        <el-button
+                            v-if="lesson.analysis_video_result_json"
+                            link
+                            :type="
+                                Math.max(
+                                    ...lesson.analysis_video_result_json.results.google.moderation.map(
+                                        (item: any) => item.confidence
+                                    )
+                                ) >= 0.8
+                                    ? 'danger'
+                                    : 'primary'
+                            "
+                            :icon="
+                                Math.max(
+                                    ...lesson.analysis_video_result_json.results.google.moderation.map(
+                                        (item: any) => item.confidence
+                                    )
+                                ) >= 0.8
+                                    ? 'WarnTriangleFilled'
+                                    : 'InfoFilled'
+                            "
+                            @click.stop="showModerationResult(lesson)"
+                        />
+                    </el-menu-item>
+                </el-sub-menu>
+            </el-menu>
+        </div>
+    </div>
     <el-dialog v-model="dialogTableVisible" width="800">
         <template #header>
             <div class="flex justify-between">
@@ -191,8 +196,8 @@
 </template>
 
 <script lang="ts" setup>
-import { moderationCourse } from '@/api/modules/moderation'
-import type { ModerationLesson } from '@/api/modules/moderation/types'
+import { moderationCourse } from '@/api/modules/moderator/moderation'
+import type { ModerationLesson } from '@/api/modules/moderator/moderation/types'
 import { ToastType } from '@/types'
 import { showToast } from '@/utils/toastHelper'
 
@@ -203,6 +208,8 @@ const courseId: number = parseInt(route.params.courseId as string)
 const selectedConfidentPercent = ref(0.8)
 const selectedSort = ref('timeline')
 const loadingModeration = ref(false)
+const moderationVideoResult = ref<any>([])
+const moderationTextResult = ref<any>([])
 const sortOptionsConfident = [
     { label: 'Timeline', value: 'timeline' },
     { label: 'Ascending', value: 'ascending' },
@@ -300,6 +307,4 @@ const handleModerationCourse = async () => {
     }
     loadingModeration.value = false
 }
-const moderationVideoResult = ref<any>([])
-const moderationTextResult = ref<any>([])
 </script>

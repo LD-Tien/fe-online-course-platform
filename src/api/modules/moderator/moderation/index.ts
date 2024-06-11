@@ -1,8 +1,23 @@
 import axios from '@/api/axios'
+import { CourseStatus } from './types'
 
-export const getCoursesPaginate = async () => {
+export const getCourseByQuery = async ({
+    filters = { status: CourseStatus.UNDER_REVIEW },
+    sorts = { created_at: 'desc' },
+    search = { searchText: '' },
+    page = 1,
+    limit = 10
+}: any) => {
     try {
-        return await axios.get('/moderator/courses')
+        return await axios.get('/moderator/courses', {
+            params: {
+                filters,
+                sorts,
+                search,
+                page,
+                limit
+            }
+        })
     } catch (error) {
         return Promise.reject(error)
     }

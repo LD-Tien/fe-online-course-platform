@@ -1,188 +1,198 @@
 <template>
-    <div v-if="store.state.loading.isLoading">
-        <el-skeleton :rows="10" animated />
+    <div class="flex items-center justify-between p-3">
+        <el-tag type="primary" size="large">{{ CourseStatus[courseForm.status as number] }}</el-tag>
+        <el-button size="large" type="primary" @click="handlePublishCourse">Publish</el-button>
     </div>
-    <el-tabs v-else type="border-card" class="demo-tabs">
-        <el-tab-pane label="Overview">
-            <el-form ref="formRef" :model="courseForm" class="flex gap-2 demo-ruleForm">
-                <div>
-                    <label for="input-thumbnail-file">
-                        <div
-                            v-show="!courseForm.thumbnail && !isSelectedNewImage"
-                            class="flex w-[500px] items-center justify-center h-[300px] border border-black cursor-pointer rounded-3xl"
-                        >
-                            Upload thumbnail
-                        </div>
-                        <img
-                            v-show="courseForm.thumbnail || isSelectedNewImage"
-                            ref="avatar"
-                            class="w-[500px] object-cover h-[300px] rounded-3xl"
-                            :src="
-                                courseForm.thumbnail
-                                    ? 'http://localhost:8000' + courseForm.thumbnail
-                                    : ''
-                            "
-                        />
-                    </label>
-                    <input
-                        ref="thumbnail_file"
-                        id="input-thumbnail-file"
-                        @input="previewAvatar"
-                        type="file"
-                        accept="image/*"
-                        hidden
-                    />
-                </div>
-                <div class="flex flex-col flex-1">
-                    <el-form-item
-                        prop="course_name"
-                        :rules="[{ required: true, message: 'Course name is required' }]"
-                    >
-                        <el-input
-                            v-model.number="courseForm.course_name"
-                            type="text"
-                            placeholder="course name"
-                            autocomplete="off"
-                        />
-                    </el-form-item>
-                    <el-form-item>
-                        <el-select
-                            v-model="courseForm.category_id"
-                            placeholder="Please select category"
-                        >
-                            <el-option
-                                v-for="item in categories"
-                                :label="item.name"
-                                :value="item.id ?? ''"
-                                :key="item.id"
+    <div class="flex flex-col gap-2 overflow-auto">
+        <div v-if="store.state.loading.isLoading">
+            <el-skeleton :rows="10" animated />
+        </div>
+        <el-tabs v-else type="border-card" class="demo-tabs">
+            <el-tab-pane label="Overview">
+                <el-form ref="formRef" :model="courseForm" class="flex gap-2 demo-ruleForm">
+                    <div>
+                        <label for="input-thumbnail-file">
+                            <div
+                                v-show="!courseForm.thumbnail && !isSelectedNewImage"
+                                class="flex w-[500px] items-center justify-center h-[300px] border border-black cursor-pointer rounded-3xl"
+                            >
+                                Upload thumbnail
+                            </div>
+                            <img
+                                v-show="courseForm.thumbnail || isSelectedNewImage"
+                                ref="avatar"
+                                class="w-[500px] object-cover h-[300px] rounded-3xl"
+                                :src="
+                                    courseForm.thumbnail
+                                        ? 'http://localhost:8000' + courseForm.thumbnail
+                                        : ''
+                                "
                             />
-                        </el-select>
-                    </el-form-item>
-                    <ckeditor
-                        :editor="ClassicEditor"
-                        v-model="courseForm.description"
-                        :config="{}"
-                    />
-                    <el-form-item class="mt-4">
-                        <el-button type="primary" @click="handleSubmit">Save</el-button>
-                        <el-button>Reset</el-button>
-                    </el-form-item>
-                </div>
-            </el-form>
-        </el-tab-pane>
-        <el-tab-pane label="Curriculum">
-            <div class="flex flex-col gap-2">
-                <el-collapse>
-                    <draggableComponent
-                        v-model="courseForm.modules"
-                        group="module"
-                        item-key="ordinal_number"
-                        @change="handleChangeModuleOrdinalNumber"
-                    >
-                        <template #item="{ element: module, index: moduleIndex }">
-                            <el-collapse-item>
-                                <template #title>
-                                    <div class="flex items-center justify-between w-full p-2">
-                                        <div class="">
-                                            <span class="text-lg font-bold">
-                                                {{ module.ordinal_number }} -
-                                            </span>
-                                            <span class="w-full text-lg font-bold">
-                                                {{ module.name }}
-                                            </span>
-                                        </div>
-                                        <div class="flex">
-                                            <el-button
-                                                @click.stop="
-                                                    handleShowModalLessonForm({
-                                                        id: undefined,
-                                                        name: '',
-                                                        //@ts-ignore
-                                                        ordinal_number: module.lessons.length + 1,
-                                                        description: '',
-                                                        module_id: module.id as number,
-                                                        video_path: '',
-                                                        duration: 0,
-                                                        is_preview: 0
-                                                    })
-                                                "
-                                            >
-                                                Add Lesson
-                                            </el-button>
-                                            <el-button disabled>Add Quiz</el-button>
-                                            <el-popconfirm
-                                                @confirm="handleDeleteModule(module.id as number)"
-                                                title="Are you sure to delete this?"
-                                            >
-                                                <template #reference>
-                                                    <el-button @click.stop type="danger">
-                                                        <el-icon> <Delete /> </el-icon>
-                                                    </el-button>
-                                                </template>
-                                            </el-popconfirm>
+                        </label>
+                        <input
+                            ref="thumbnail_file"
+                            id="input-thumbnail-file"
+                            @input="previewAvatar"
+                            type="file"
+                            accept="image/*"
+                            hidden
+                        />
+                    </div>
+                    <div class="flex flex-col flex-1">
+                        <el-form-item
+                            prop="course_name"
+                            :rules="[{ required: true, message: 'Course name is required' }]"
+                        >
+                            <el-input
+                                v-model.number="courseForm.course_name"
+                                type="text"
+                                placeholder="course name"
+                                autocomplete="off"
+                            />
+                        </el-form-item>
+                        <el-form-item>
+                            <el-select
+                                v-model="courseForm.category_id"
+                                placeholder="Please select category"
+                            >
+                                <el-option
+                                    v-for="item in categories"
+                                    :label="item.name"
+                                    :value="item.id ?? ''"
+                                    :key="item.id"
+                                />
+                            </el-select>
+                        </el-form-item>
+                        <ckeditor
+                            :editor="ClassicEditor"
+                            v-model="courseForm.description"
+                            :config="{}"
+                        />
+                        <el-form-item class="mt-4">
+                            <el-button type="primary" @click="handleSubmit">Save</el-button>
+                            <el-button>Reset</el-button>
+                        </el-form-item>
+                    </div>
+                </el-form>
+            </el-tab-pane>
+            <el-tab-pane label="Curriculum">
+                <div class="flex flex-col gap-2">
+                    <el-collapse>
+                        <draggableComponent
+                            v-model="courseForm.modules"
+                            group="module"
+                            item-key="ordinal_number"
+                            @change="handleChangeModuleOrdinalNumber"
+                        >
+                            <template #item="{ element: module, index: moduleIndex }">
+                                <el-collapse-item>
+                                    <template #title>
+                                        <div class="flex items-center justify-between w-full p-2">
+                                            <div class="">
+                                                <span class="text-lg font-bold">
+                                                    {{ module.ordinal_number }} -
+                                                </span>
+                                                <span class="w-full text-lg font-bold">
+                                                    {{ module.name }}
+                                                </span>
+                                            </div>
+                                            <div class="flex">
+                                                <el-button
+                                                    @click.stop="
+                                                        handleShowModalLessonForm({
+                                                            id: undefined,
+                                                            name: '',
+                                                            //@ts-ignore
+                                                            ordinal_number:
+                                                                module.lessons.length + 1,
+                                                            description: '',
+                                                            module_id: module.id as number,
+                                                            video_path: '',
+                                                            duration: 0,
+                                                            is_preview: 0
+                                                        })
+                                                    "
+                                                >
+                                                    Add Lesson
+                                                </el-button>
+                                                <el-button disabled>Add Quiz</el-button>
+                                                <el-popconfirm
+                                                    @confirm="
+                                                        handleDeleteModule(module.id as number)
+                                                    "
+                                                    title="Are you sure to delete this?"
+                                                >
+                                                    <template #reference>
+                                                        <el-button @click.stop type="danger">
+                                                            <el-icon> <Delete /> </el-icon>
+                                                        </el-button>
+                                                    </template>
+                                                </el-popconfirm>
 
-                                            <el-button
-                                                @click.stop="
-                                                    () => {
-                                                        Object.assign(moduleForm, module)
-                                                        modalModuleFormVisible = true
-                                                    }
-                                                "
-                                                type="primary"
-                                            >
-                                                <el-icon>
-                                                    <Edit />
-                                                </el-icon>
-                                            </el-button>
-                                        </div>
-                                    </div>
-                                </template>
-                                <draggableComponent
-                                    v-model="module.lessons"
-                                    item-key="ordinal_number"
-                                    @change="handleChangeLessonOrdinalNumber(moduleIndex)"
-                                >
-                                    <template #item="{ element: lesson, index: lessonIndex }">
-                                        <div class="flex items-center pl-10">
-                                            <el-button
-                                                type="danger"
-                                                small
-                                                link
-                                                @click.stop="
-                                                    handleDeleteLesson(
-                                                        moduleIndex,
-                                                        lessonIndex,
-                                                        lesson
-                                                    )
-                                                "
-                                            >
-                                                <el-icon> <Delete /> </el-icon>
-                                            </el-button>
-                                            <el-button
-                                                link
-                                                type="primary"
-                                                small
-                                                @click.stop="handleShowModalLessonForm(lesson)"
-                                            >
-                                                <el-icon>
-                                                    <Edit />
-                                                </el-icon>
-                                            </el-button>
-                                            <span class="text-lg font-semibold">
-                                                {{ lesson.ordinal_number }} - {{ lesson.name }}
-                                            </span>
+                                                <el-button
+                                                    @click.stop="
+                                                        () => {
+                                                            Object.assign(moduleForm, module)
+                                                            modalModuleFormVisible = true
+                                                        }
+                                                    "
+                                                    type="primary"
+                                                >
+                                                    <el-icon>
+                                                        <Edit />
+                                                    </el-icon>
+                                                </el-button>
+                                            </div>
                                         </div>
                                     </template>
-                                </draggableComponent>
-                            </el-collapse-item>
-                        </template>
-                    </draggableComponent>
-                </el-collapse>
-                <el-button type="primary" @click="handleAddModule">Add module</el-button>
-            </div>
-        </el-tab-pane>
-        <el-tab-pane label="Price">Price</el-tab-pane>
-    </el-tabs>
+                                    <draggableComponent
+                                        v-model="module.lessons"
+                                        item-key="ordinal_number"
+                                        @change="handleChangeLessonOrdinalNumber(moduleIndex)"
+                                    >
+                                        <template #item="{ element: lesson, index: lessonIndex }">
+                                            <div class="flex items-center pl-10">
+                                                <el-button
+                                                    type="danger"
+                                                    small
+                                                    link
+                                                    @click.stop="
+                                                        handleDeleteLesson(
+                                                            moduleIndex,
+                                                            lessonIndex,
+                                                            lesson
+                                                        )
+                                                    "
+                                                >
+                                                    <el-icon> <Delete /> </el-icon>
+                                                </el-button>
+                                                <el-button
+                                                    link
+                                                    type="primary"
+                                                    small
+                                                    @click.stop="handleShowModalLessonForm(lesson)"
+                                                >
+                                                    <el-icon>
+                                                        <Edit />
+                                                    </el-icon>
+                                                </el-button>
+                                                <span class="text-lg font-semibold">
+                                                    {{ lesson.ordinal_number }} - {{ lesson.name }}
+                                                </span>
+                                            </div>
+                                        </template>
+                                    </draggableComponent>
+                                </el-collapse-item>
+                            </template>
+                        </draggableComponent>
+                    </el-collapse>
+                    <el-button type="primary" @click="handleAddModule">Add module</el-button>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="Price">Price</el-tab-pane>
+            <el-tab-pane label="Publish">Publish</el-tab-pane>
+        </el-tabs>
+    </div>
     <el-dialog v-model="modalLessonFormVisible" title="Course">
         <el-form :model="lessonForm" label-position="top">
             <el-form-item>
@@ -237,10 +247,10 @@
     </el-dialog>
 </template>
 <script setup lang="ts">
-import { getAllCategories } from '@/api/modules/category'
-import type { Category } from '@/api/modules/category/types'
-import { getCourse, updateCourse } from '@/api/modules/course'
-import type { Course } from '@/api/modules/course/types'
+import { getAllCategories } from '@/api/modules/admin/category'
+import type { Category } from '@/api/modules/admin/category/types'
+import { getCourse, updateCourse } from '@/api/modules/instructor/course'
+import { CourseStatus, type Course } from '@/api/modules/instructor/course/types'
 import { createLesson, deleteLesson, updateLesson } from '@/api/modules/lesson'
 import type { Lesson } from '@/api/modules/lesson/types'
 import { createModule, deleteModule, getModules, updateModule } from '@/api/modules/module'
@@ -323,22 +333,38 @@ const previewAvatar = (event: any) => {
 }
 
 const handleSubmit = async () => {
-    const formData = new FormData()
+    try {
+        const formData = new FormData()
 
-    for (const key in courseForm) {
+        for (const key in courseForm) {
+            //@ts-ignore
+            formData.append(key, courseForm[key])
+        }
+
         //@ts-ignore
-        formData.append(key, courseForm[key])
-    }
+        formData.append('is_progress_limited', 0)
 
-    //@ts-ignore
-    formData.append('is_progress_limited', 0)
+        if (thumbnail_file.value.files[0]) {
+            formData.append('thumbnail_file', thumbnail_file.value.files[0])
+        }
+        //@ts-ignore
+        const response: any = await updateCourse(formData, formData.get('id'))
+        console.log('🚀 ~ handleSubmit ~ response:', response)
 
-    if (thumbnail_file.value.files[0]) {
-        formData.append('thumbnail_file', thumbnail_file.value.files[0])
+        ElNotification({
+            title: 'SUCCESS!',
+            message: 'Update course successfully!.',
+            type: 'success',
+            position: 'bottom-right'
+        })
+    } catch (error) {
+        ElNotification({
+            title: 'ERROR!',
+            message: 'Update course failed. Please try again later.',
+            type: 'error',
+            position: 'bottom-right'
+        })
     }
-    //@ts-ignore
-    const response: any = await updateCourse(formData, formData.get('id'))
-    showToast(response.data.message, ToastType.SUCCESS)
 }
 
 const handleAddModule = async () => {
@@ -497,6 +523,27 @@ const handleChangeLessonOrdinalNumber = async (moduleIndex: number) => {
         )
     } catch (error) {
         showToast('Sort lesson fail. Please refresh page and try again.', ToastType.ERROR)
+    }
+}
+
+const handlePublishCourse = async () => {
+    try {
+        const formData = new FormData()
+        formData.append('status', CourseStatus.UNDER_REVIEW)
+        const response = await updateCourse(formData, courseId)
+        ElNotification({
+            title: 'SUCCESS!',
+            message: 'Update course successfully!. Please try again later.',
+            type: 'success',
+            position: 'bottom-right'
+        })
+    } catch (error) {
+        ElNotification({
+            title: 'ERROR!',
+            message: 'Update course failed. Please try again later.',
+            type: 'error',
+            position: 'bottom-right'
+        })
     }
 }
 

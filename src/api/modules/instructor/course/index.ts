@@ -1,21 +1,25 @@
 import axios from '@/api/axios'
-import axios2 from 'axios'
 import type { Course } from './types'
 
-export const getCoursesPaginate = async () => {
+const headers = {
+    'Content-Type': 'multipart/form-data'
+}
+
+export const getCourseByQuery = async ({
+    filters,
+    sorts = { created_at: 'desc' },
+    search = { searchText: '' },
+    page = 1,
+    limit = 10
+}: any) => {
     try {
         return await axios.get('/instructor/courses', {
             params: {
-                filters: {
-                    user_id: ['=', 1],
-                    price: ['>', 1]
-                },
-                sorts: {
-                    course_name: 'desc',
-                    created_at: 'asc'
-                },
-                page: 1,
-                limit: 2
+                filters,
+                sorts,
+                search,
+                page,
+                limit
             }
         })
     } catch (error) {
@@ -41,16 +45,7 @@ export const createCourse = async (data: Course) => {
 
 export const updateCourse = async (formData: FormData, id: number) => {
     try {
-        return await axios2.post(
-            'http://localhost:8000/api/instructor/courses/' + id + '?_method=PUT',
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: 'Bearer ' + localStorage.getItem('access_token')
-                }
-            }
-        )
+        return await axios.post('/instructor/courses/' + id + '?_method=PUT', formData, { headers })
     } catch (error) {
         return Promise.reject(error)
     }

@@ -1,9 +1,9 @@
 <template>
-    <el-menu class="el-menu-vertical-demo w-[300px]" :default-active="activeIndex">
+    <el-menu class="el-menu-vertical-demo w-[300px] min-w-[300px]" :default-active="activeIndex">
         <img
             class="p-3"
             src="@/assets/img/logo-light.png"
-            @click="$router.push({ name: 'admin-dashboard' })"
+            @click="$router.push({ name: 'instructor-dashboard' })"
         />
         <el-menu-item
             index="instructor-dashboard"

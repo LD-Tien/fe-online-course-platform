@@ -35,3 +35,9 @@ export interface VideoModeration {
     timestamp: number
     confidence: number
 }
+
+export enum CourseStatus {
+    UNDER_REVIEW = 2,
+    PUBLISHED = 3,
+    REJECTED = 5
+}

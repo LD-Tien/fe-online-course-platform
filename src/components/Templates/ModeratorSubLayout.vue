@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <div class="flex overflow-y-auto">
         <div class="grow">
             <router-view v-slot="{ Component }">
                 <component :is="Component" :lesson="currentLesson" :currentTime="currentTime" />
@@ -14,10 +14,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import { getCourse } from '@/api/modules/moderation'
-import type { ModerationLesson, Course, Module } from '@/api/modules/moderation/types'
-import { ToastType } from '@/types'
-import { showToast } from '@/utils/toastHelper'
+import { getCourse } from '@/api/modules/moderator/moderation'
+import type { ModerationLesson, Course, Module } from '@/api/modules/moderator/moderation/types'
 
 const route = useRoute()
 const currentTime = ref(0)
@@ -79,6 +77,7 @@ onMounted(async () => {
     try {
         //@ts-ignore
         const response = await getCourse(route.params.courseId)
+        console.log(response)
         Object.assign(course, response.data)
         course.modules = course.modules?.sort((a, b) => a.ordinal_number - b.ordinal_number)
         course.modules?.forEach((module) => {
@@ -94,7 +93,12 @@ onMounted(async () => {
             currentModule.lessons?.find((lesson) => lesson.id + '' === route.params.lessonId)
         )
     } catch (error) {
-        showToast('Get course fail', ToastType.ERROR)
+        ElNotification({
+            title: 'ERROR!',
+            message: 'Get course failed. Please try again later.',
+            type: 'error',
+            position: 'bottom-right'
+        })
     }
 })
 </script>

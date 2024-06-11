@@ -1,13 +1,9 @@
 <template>
-    <div class="flex">
-        <div class="w-fit">
-            <instructor-sidebar />
-        </div>
-        <div class="overflow-x-auto grow">
+    <div class="flex h-screen">
+        <instructor-sidebar />
+        <div class="flex flex-col w-full overflow-auto">
             <instructor-header />
-            <main>
-                <router-view />
-            </main>
+            <router-view />
         </div>
     </div>
 </template>

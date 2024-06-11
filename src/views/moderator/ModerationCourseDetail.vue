@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 !h-full overflow-y-auto">
         <video
             :src="videoUrl"
             class="w-full"

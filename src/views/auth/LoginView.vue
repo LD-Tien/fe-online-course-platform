@@ -113,6 +113,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
         if (valid) {
             try {
                 await store.dispatch('auth/login', ruleForm)
+                store.state.loading.isLoading = false
                 switch (store.state.auth.user?.role) {
                     case UserRole.ADMIN:
                         router.push({ name: 'admin-dashboard', replace: true })

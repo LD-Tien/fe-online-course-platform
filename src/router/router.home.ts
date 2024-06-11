@@ -9,6 +9,16 @@ const authRouter: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'home',
                 component: () => import('@/views/HomeView.vue')
+            },
+            {
+                path: 'search',
+                name: 'search',
+                component: () => import('@/views/CourseOverviewView.vue')
+            },
+            {
+                path: 'courses/:courseId/overview',
+                name: 'course-detail',
+                component: () => import('@/views/CourseOverviewView.vue')
             }
         ]
     }

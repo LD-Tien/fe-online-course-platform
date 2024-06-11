@@ -23,14 +23,6 @@ export const getCategoryByQuery = async ({
     }
 }
 
-export const getAllCategories = async () => {
-    try {
-        return await axios.get('/categories')
-    } catch (error) {
-        return Promise.reject(error)
-    }
-}
-
 export const createCategory = async (data: Category) => {
     try {
         return await axios.post('/admin/categories', data)

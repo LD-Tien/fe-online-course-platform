@@ -1,26 +1,29 @@
 <template>
-    <el-menu
-        default-active="2"
-        class="flex flex-col h-screen min-w-full p-3 el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
-    >
-        <base-icon class="self-center" name="logo-light" />
-        <el-menu-item index="1">
+    <el-menu class="el-menu-vertical-demo w-[300px] min-w-[300px]" :default-active="activeIndex">
+        <img
+            class="p-3"
+            src="@/assets/img/logo-light.png"
+            @click="$router.push({ name: 'moderator-dashboard' })"
+        />
+        <el-menu-item
+            index="moderator-dashboard"
+            @click="$router.push({ name: 'moderator-dashboard' })"
+        >
             <el-icon><icon-menu /></el-icon>
-            <router-link :to="{ name: 'moderator-dashboard' }"><span>Dashboard</span></router-link>
+            <span>Dashboard</span>
         </el-menu-item>
-        <el-menu-item index="2">
+        <el-menu-item
+            index="moderation-course"
+            @click="$router.push({ name: 'moderation-course' })"
+        >
             <el-icon><icon-menu /></el-icon>
-            <router-link :to="{ name: 'moderation-course' }">
-                <span>Moderation course</span>
-            </router-link>
+            <span>Course</span>
         </el-menu-item>
     </el-menu>
 </template>
 
 <script lang="ts" setup>
 import { Menu as IconMenu } from '@element-plus/icons-vue'
-const handleOpen = (key: string, keyPath: string[]) => {}
-const handleClose = (key: string, keyPath: string[]) => {}
+const route = useRoute()
+const activeIndex = ref<string>(route.name as string)
 </script>

@@ -148,8 +148,8 @@ import {
     deleteCategory,
     getCategoryByQuery,
     updateCategory
-} from '@/api/modules/category'
-import type { Meta, Category } from '@/api/modules/category/types'
+} from '@/api/modules/admin/category'
+import type { Meta, Category } from '@/api/modules/admin/category/types'
 
 import { reactive, ref } from 'vue'
 import { dayjs, type FormInstance } from 'element-plus'
