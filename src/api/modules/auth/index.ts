@@ -31,6 +31,7 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
     try {
         return await axios.post('/login', data)
     } catch (error) {
+        console.log('🚀 ~ login ~ error:', error)
         return Promise.reject(error)
     }
 }

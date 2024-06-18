@@ -67,6 +67,7 @@ const authModule: Module<AuthState, RootState> = {
         removeLoginSession(state) {
             state.user = null
             state.access_token = null
+            window.localStorage.clear()
         }
     }
 }

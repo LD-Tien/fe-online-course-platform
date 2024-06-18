@@ -133,7 +133,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getAllCategories } from '@/api/modules/admin/category'
+import { category } from '@/api/modules/common/category'
 import type { Category, Meta } from '@/api/modules/admin/category/types'
 import { createCourse, getCourseByQuery } from '@/api/modules/instructor/course'
 import { CourseStatus, type Course } from '@/api/modules/instructor/course/types'
@@ -240,7 +240,7 @@ onMounted(async () => {
     store.state.loading.isLoading = true
     const [coursesData, categoriesData]: any = await Promise.all([
         getCourseByQuery({ limit: pageLimit.value }),
-        getAllCategories()
+        category.getAllCategories()
     ])
 
     tableData.value = coursesData.data

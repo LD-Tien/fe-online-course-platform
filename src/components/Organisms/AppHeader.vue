@@ -9,22 +9,10 @@
     >
         <el-space>
             <router-link :to="{ name: 'home' }"><BaseIcon name="logo-light" /></router-link>
-            <el-menu-item index="1" class="hidden-sm-and-down">Home</el-menu-item>
-            <el-sub-menu index="2">
-                <template #title>Category</template>
-                <el-menu-item index="2-1">item one</el-menu-item>
-                <el-menu-item index="2-2">item two</el-menu-item>
-                <el-menu-item index="2-3">item three</el-menu-item>
-                <el-sub-menu index="2-4">
-                    <template #title>item four</template>
-                    <el-menu-item index="2-4-1">item one</el-menu-item>
-                    <el-menu-item index="2-4-2">item two</el-menu-item>
-                    <el-menu-item index="2-4-3">item three</el-menu-item>
-                </el-sub-menu>
-            </el-sub-menu>
             <el-input
                 style="width: 300px"
-                v-model="search"
+                v-model="searchText"
+                @input="handleSearchChange"
                 size="default"
                 placeholder="Search"
                 :prefix-icon="Search"
@@ -115,8 +103,9 @@ import { ToastType } from '@/types'
 import { UserRole } from '@/api/modules/auth/types'
 
 const router = useRouter()
-const search = ''
 const activeIndex = ref('1')
+const searchText = ref('')
+let timeoutId: any = null
 
 const avatarPreviewSrc = computed(() =>
     store.state.auth.user?.profile_photo_url
@@ -127,6 +116,16 @@ const avatarPreviewSrc = computed(() =>
 const handleSelect = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
+
+watch(searchText, () => {
+    clearTimeout(timeoutId)
+
+    timeoutId = setTimeout(() => {
+        router.push({ name: 'search-course', replace: true, params: { keyword: searchText.value } })
+    }, 500)
+})
+
+const handleSearchChange = () => {}
 
 const handleLogout = async () => {
     try {

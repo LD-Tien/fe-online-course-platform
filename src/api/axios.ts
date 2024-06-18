@@ -84,8 +84,8 @@ instance.interceptors.response.use(
         ]
 
         if (typeof httpCode === 'number' && errorCodesToRedirect.includes(httpCode)) {
-            router.push({ name: 'page_error' })
-            return Promise.reject(errorData)
+            // router.push({ name: 'page_error' })
+            return Promise.reject(errorResponse)
         }
 
         switch (httpCode) {

@@ -23,6 +23,9 @@
             <template #dropdown>
                 <el-dropdown-menu>
                     <el-dropdown-item>Profile account</el-dropdown-item>
+                    <el-dropdown-item @click="$router.push({ name: 'home' })"
+                        >Learner page</el-dropdown-item
+                    >
                     <el-dropdown-item divided>
                         <el-button type="danger" link @click="handleLogout">Log Out</el-button>
                     </el-dropdown-item>

@@ -4,7 +4,7 @@
             <div class="flex">
                 <el-button
                     type="success"
-                    :loading="loadingModeration"
+                    :disabled="loadingModeration"
                     class="w-full"
                     @click="handleModerationCourse"
                 >
@@ -12,7 +12,7 @@
                 </el-button>
                 <el-button
                     type="danger"
-                    :loading="loadingModeration"
+                    :disabled="loadingModeration"
                     class="w-full"
                     @click="handleModerationCourse"
                 >
@@ -199,6 +199,7 @@
 import { moderationCourse } from '@/api/modules/moderator/moderation'
 import type { ModerationLesson } from '@/api/modules/moderator/moderation/types'
 import { ToastType } from '@/types'
+import { secondsToHHMMSS } from '@/utils/convertHelper'
 import { showToast } from '@/utils/toastHelper'
 
 const props = defineProps(['modules'])
@@ -277,16 +278,6 @@ const customColors = [
     { color: '#b3e19d', percentage: 40 },
     { color: '#95d475', percentage: 20 }
 ]
-
-function secondsToHHMMSS(totalSeconds: number) {
-    const hours = Math.floor(totalSeconds / 3600)
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = Math.floor(totalSeconds % 60)
-    //@ts-ignore
-    const pad = (num) => String(num).padStart(2, '0')
-
-    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
-}
 
 function showModerationResult(lesson: ModerationLesson) {
     //@ts-ignore

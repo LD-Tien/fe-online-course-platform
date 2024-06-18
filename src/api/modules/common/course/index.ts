@@ -4,6 +4,7 @@ import type { GetCourseDetailResponse, GetCoursesByQueryResponse } from './types
 const resource = '/courses'
 
 export const course = {
-    getCoursesByQuery: (): Promise<GetCoursesByQueryResponse> => axios.get(resource),
+    getCoursesByQuery: (query: any): Promise<GetCoursesByQueryResponse> =>
+        axios.get(resource, { params: query }),
     detail: (id: number): Promise<GetCourseDetailResponse> => axios.get(`${resource}/${id}`)
 }

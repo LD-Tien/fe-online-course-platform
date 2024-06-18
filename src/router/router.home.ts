@@ -8,17 +8,17 @@ const authRouter: Array<RouteRecordRaw> = [
             {
                 path: '',
                 name: 'home',
-                component: () => import('@/views/HomeView.vue')
+                component: () => import('@/views/common/HomeView.vue')
             },
             {
-                path: 'search',
-                name: 'search',
-                component: () => import('@/views/CourseOverviewView.vue')
+                path: 'search/:keyword',
+                name: 'search-course',
+                component: () => import('@/views/common/SearchView.vue')
             },
             {
                 path: 'courses/:courseId/overview',
                 name: 'course-detail',
-                component: () => import('@/views/CourseOverviewView.vue')
+                component: () => import('@/views/common/CourseOverviewView.vue')
             }
         ]
     }

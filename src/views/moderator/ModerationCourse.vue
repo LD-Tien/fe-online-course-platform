@@ -112,7 +112,8 @@ import type { Meta } from '@/api/modules/admin/category/types'
 import { CourseStatus } from '@/api/modules/moderator/moderation/types'
 
 const courses = ref<Course[]>([])
-const metaData = reactive<Partial<Meta>>({})
+const metaData = reactive({}) as Meta
+const searchText = ref('')
 const optionsFilterByStatus = ref(
     Object.values(CourseStatus)
         .filter((item) => typeof item === 'number')
@@ -123,6 +124,20 @@ const optionSelected = ref(2)
 const handleClick = () => {
     console.log('click')
 }
+
+const handleCurrentPageChange = () => {}
+
+const handleFilterStatusChange = async () => {
+    try {
+        const response = await getCourseByQuery({ filters: { status: optionSelected.value } })
+        console.log(response)
+        courses.value = response.data
+    } catch (error) {
+        showToast('Something went wrong. Please try again later', ToastType.ERROR)
+    }
+}
+
+const handleSearchChange = (searchText: string) => {}
 
 onMounted(async () => {
     try {

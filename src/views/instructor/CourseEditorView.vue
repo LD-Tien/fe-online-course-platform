@@ -247,14 +247,19 @@
     </el-dialog>
 </template>
 <script setup lang="ts">
-import { getAllCategories } from '@/api/modules/admin/category'
-import type { Category } from '@/api/modules/admin/category/types'
+import { category } from '@/api/modules/common/category'
+import type { Category } from '@/api/modules/common/category/types'
 import { getCourse, updateCourse } from '@/api/modules/instructor/course'
 import { CourseStatus, type Course } from '@/api/modules/instructor/course/types'
-import { createLesson, deleteLesson, updateLesson } from '@/api/modules/lesson'
-import type { Lesson } from '@/api/modules/lesson/types'
-import { createModule, deleteModule, getModules, updateModule } from '@/api/modules/module'
-import type { Module } from '@/api/modules/module/types'
+import { createLesson, deleteLesson, updateLesson } from '@/api/modules/instructor/lesson'
+import type { Lesson } from '@/api/modules/instructor/lesson/types'
+import {
+    createModule,
+    deleteModule,
+    getModules,
+    updateModule
+} from '@/api/modules/instructor/module'
+import type { Module } from '@/api/modules/instructor/module/types'
 import { ToastType } from '@/types'
 import { showToast } from '@/utils/toastHelper'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -553,7 +558,7 @@ onMounted(async () => {
     if (courseId) {
         const [courseData, categoriesData] = await Promise.all([
             getCourse(courseId),
-            getAllCategories(),
+            category.getAllCategories(),
             getModules(courseId)
         ])
 

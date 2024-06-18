@@ -82,6 +82,7 @@ export default {
         },
         black: {
           70: 'rgba(0, 0, 0, 0.7)',
+          100: 'rgba(0, 0, 0, 1)',
         },
         neutral: {
           0: '#FFFFFF',
