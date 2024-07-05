@@ -5,7 +5,7 @@
                 style="width: 240px"
                 @input="handleSearchChange(searchText)"
                 v-model="searchText"
-                placeholder="Search by name, id"
+                placeholder="Tìm kiếm bằng tên, id"
             >
                 <template #prefix>
                     <el-icon class="el-input__icon"><search /></el-icon>
@@ -21,7 +21,7 @@
                 @current-change="handleCurrentChange"
             />
             <el-button type="primary" @click="dialogCreateCategoryFormVisible = true" small>
-                New Category
+                Thêm thể loại
             </el-button>
         </div>
         <div
@@ -46,47 +46,47 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="Category name">
+            <el-table-column label="Tên thể loại">
                 <template #default="scope">
                     <el-tag>{{ scope.row.name }}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="Updated at">
+            <el-table-column label="Ngày cập nhật">
                 <template #default="scope">
                     {{ dayjs(scope.row.updated_at).format('DD/MM/YYYY HH:mm ') }}
                 </template>
             </el-table-column>
-            <el-table-column label="Created at">
+            <el-table-column label="Ngày tạo">
                 <template #default="scope">
                     {{ dayjs(scope.row.created_at).format('DD/MM/YYYY HH:mm ') }}
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="Operations">
+            <el-table-column fixed="right" label="">
                 <template #default="scope">
                     <el-button
                         plain
                         @click="handleShowModalUpdate(scope.$index, scope.row)"
                         size="small"
                     >
-                        Edit
+                        Chỉnh sửa
                     </el-button>
                     <el-popconfirm
                         title="Are you sure to delete this?"
                         @confirm="handleDelete(scope.$index, scope.row)"
                     >
                         <template #reference>
-                            <el-button size="small" type="danger">Delete</el-button>
+                            <el-button size="small" type="danger">Xóa</el-button>
                         </template>
                     </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
-        <el-dialog v-model="dialogUpdateCategoryFormVisible" title="Update category" width="500">
+        <el-dialog v-model="dialogUpdateCategoryFormVisible" title="Cập nhật thể loại" width="500">
             <el-form ref="formUpdateCategoryRef" :model="updateCategoryForm">
                 <el-form-item
-                    label="Category name"
+                    label="Tên thể loại"
                     prop="name"
-                    :rules="[{ required: true, message: 'Category name is required' }]"
+                    :rules="[{ required: true, message: 'Vui lòng nhập tên thể loại' }]"
                     :label-width="formLabelWidth"
                 >
                     <el-input v-model="updateCategoryForm.name" autocomplete="off" />
@@ -98,28 +98,24 @@
                         :loading="isLoading"
                         @click="dialogUpdateCategoryFormVisible = false"
                     >
-                        Cancel
+                        Hủy
                     </el-button>
                     <el-button
                         :loading="isLoading"
                         type="primary"
                         @click="handleEdit(formUpdateCategoryRef)"
                     >
-                        Save
+                        Lưu
                     </el-button>
                 </div>
             </template>
         </el-dialog>
-        <el-dialog
-            v-model="dialogCreateCategoryFormVisible"
-            title="Create new category"
-            width="500"
-        >
+        <el-dialog v-model="dialogCreateCategoryFormVisible" title="Thêm thể loại" width="500">
             <el-form ref="formRef" :model="createCategoryForm">
                 <el-form-item
-                    label="Category name"
+                    label="Tên thể loại"
                     prop="name"
-                    :rules="[{ required: true, message: 'Category name is required' }]"
+                    :rules="[{ required: true, message: 'Vui lòng nhập tên thể loại' }]"
                     :label-width="formLabelWidth"
                 >
                     <el-input v-model="createCategoryForm.name" autocomplete="off" />
@@ -131,10 +127,10 @@
                         :loading="isLoading"
                         @click="dialogCreateCategoryFormVisible = false"
                     >
-                        Cancel
+                        Hủy
                     </el-button>
                     <el-button :loading="isLoading" type="primary" @click="handleCreate(formRef)">
-                        Create
+                        Tạo
                     </el-button>
                 </div>
             </template>

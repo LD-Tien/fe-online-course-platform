@@ -6,18 +6,11 @@
             @click="$router.push({ name: 'instructor-dashboard' })"
         />
         <el-menu-item
-            index="instructor-dashboard"
-            @click="$router.push({ name: 'instructor-dashboard' })"
-        >
-            <el-icon><icon-menu /></el-icon>
-            <span>Dashboard</span>
-        </el-menu-item>
-        <el-menu-item
             index="instructor-course"
             @click="$router.push({ name: 'instructor-course' })"
         >
             <el-icon><icon-menu /></el-icon>
-            <span>Course</span>
+            <span>Quản lý khóa học</span>
         </el-menu-item>
     </el-menu>
 </template>

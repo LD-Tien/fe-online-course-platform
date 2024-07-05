@@ -5,7 +5,7 @@
                 style="width: 240px"
                 @input="handleSearchChange(searchText)"
                 v-model="searchText"
-                placeholder="Search by name, id"
+                placeholder="Tìm kiếm bằng tên, id"
             >
                 <template #prefix>
                     <el-icon class="el-input__icon"><search /></el-icon>
@@ -46,8 +46,8 @@
         </div>
         <el-table v-else :data="courses" style="width: 100%">
             <el-table-column fixed prop="id" label="ID" width="150" />
-            <el-table-column prop="course_name" label="Course name" width="300" />
-            <el-table-column prop="thumbnail" label="Thumbnail" width="120">
+            <el-table-column prop="course_name" label="Tên khóa học" width="300" />
+            <el-table-column prop="thumbnail" label="Ảnh bìa" width="120">
                 <template #default="scope">
                     <el-image
                         style="width: 100px; height: 100px"
@@ -56,45 +56,47 @@
                     />
                 </template>
             </el-table-column>
-            <el-table-column prop="price" label="Price" width="120">
+            <!-- <el-table-column prop="price" label="Giá tiền" width="120">
                 <template #default="scope">
                     {{ scope.row.price === 0 ? 'Free' : scope.row.price }}
                 </template>
-            </el-table-column>
-            <el-table-column prop="status" label="Status" width="200">
+            </el-table-column> -->
+            <el-table-column prop="status" label="Trạng thái" width="200">
                 <template #default="scope">
                     <el-tag>{{ CourseStatus[scope.row.status] }}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="Created at" width="200">
+            <el-table-column label="Ngày tạo" width="200">
                 <template #default="scope">
                     {{ dayjs(scope.row.created_at).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column label="Updated at" width="200">
+            <el-table-column label="Ngày cập nhật" width="200">
                 <template #default="scope">
                     {{ dayjs(scope.row.updated_at).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="Operations" width="200">
+            <el-table-column fixed="right" label="" width="300">
                 <template #default="scope">
-                    <el-button link type="primary" size="small" @click="handleClick">
-                        Publish
-                    </el-button>
-                    <el-button link type="danger" size="small">Reject</el-button>
-                    <el-button
-                        link
-                        @click="
-                            $router.push({
-                                name: 'moderation-course-detail',
-                                params: { courseId: scope.row.id }
-                            })
-                        "
-                        type="warning"
-                        size="small"
-                    >
-                        Detail
-                    </el-button>
+                    <div class="flex justify-center w-full">
+                        <el-button link type="primary" size="small" @click="handleClick">
+                            Xuất bản
+                        </el-button>
+                        <el-button link type="danger" size="small">Từ chối duyệt</el-button>
+                        <el-button
+                            link
+                            @click="
+                                $router.push({
+                                    name: 'moderation-course-detail',
+                                    params: { courseId: scope.row.id }
+                                })
+                            "
+                            type="warning"
+                            size="small"
+                        >
+                            Chi tiết
+                        </el-button>
+                    </div>
                 </template>
             </el-table-column>
         </el-table>

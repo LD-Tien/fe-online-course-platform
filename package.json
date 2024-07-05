@@ -26,6 +26,8 @@
     "axios": "^1.6.8",
     "dayjs": "^1.11.11",
     "element-plus": "^2.7.2",
+    "laravel-echo": "^1.16.1",
+    "pusher-js": "^8.4.0-rc2",
     "vee-validate": "^4.12.8",
     "video.js": "^7.21.5",
     "vite-svg-loader": "^5.1.0",

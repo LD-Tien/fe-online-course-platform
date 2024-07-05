@@ -12,9 +12,7 @@
             <el-button link>
                 <div class="flex flex-col justify-end mr-2">
                     <el-tag size="small" type="success">
-                        <span class="text-xs">
-                            {{ UserRole[store.state.auth.user?.role ?? 4] }}
-                        </span>
+                        <span class="text-xs"> Người hướng dẫn </span>
                     </el-tag>
                     <span class="text-xs">{{ store.state.auth.user?.name }}</span>
                 </div>
@@ -22,12 +20,12 @@
             </el-button>
             <template #dropdown>
                 <el-dropdown-menu>
-                    <el-dropdown-item>Profile account</el-dropdown-item>
+                    <el-dropdown-item>Thông tin tài khoản</el-dropdown-item>
                     <el-dropdown-item @click="$router.push({ name: 'home' })"
-                        >Learner page</el-dropdown-item
+                        >Trang người học</el-dropdown-item
                     >
                     <el-dropdown-item divided>
-                        <el-button type="danger" link @click="handleLogout">Log Out</el-button>
+                        <el-button type="danger" link @click="handleLogout">Đăng xuất</el-button>
                     </el-dropdown-item>
                 </el-dropdown-menu>
             </template>

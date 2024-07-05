@@ -24,14 +24,14 @@
                 :course-detail="courseDetail"
             />
         </div>
-        <el-dialog v-model="dialogFormVisible" title="Review this course" width="500">
+        <el-dialog v-model="dialogFormVisible" title="Đánh giá khóa học" width="500">
             <el-form>
                 <el-form-item>
-                    <el-rate v-model="courseDetail.user_review.rating_value" size="large" />
+                    <el-rate v-model="reviewData.rating_value" size="large" />
                 </el-form-item>
                 <el-form-item>
                     <el-input
-                        v-model="courseDetail.user_review.comment"
+                        v-model="reviewData.comment"
                         :rows="3"
                         type="textarea"
                         placeholder="Tell us about your own personal experience taking this course"
@@ -40,13 +40,16 @@
             </el-form>
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false">Cancel</el-button>
+                    <el-button @click="dialogFormVisible = false">Hủy</el-button>
+                    <el-button type="danger" :loading="isLoadingHandleReview" @click="handleReview">
+                        Xóa đánh giá hiện tại
+                    </el-button>
                     <el-button
                         type="primary"
                         :loading="isLoadingHandleReview"
                         @click="handleReview"
                     >
-                        Save
+                        Lưu đánh giá
                     </el-button>
                 </div>
             </template>
@@ -67,6 +70,10 @@ const router = useRouter()
 const courseId = parseInt(route.params.courseId as string)
 const courseDetail = reactive({}) as CourseDetail
 const currentLesson = reactive({}) as Lesson
+const reviewData = reactive({}) as {
+    rating_value: number
+    comment: string
+}
 const videoUrl = ref('')
 const currentLessonId = ref(parseInt(route.query.lessonId as string))
 const dialogFormVisible = ref(false)
@@ -119,10 +126,15 @@ const handleReview = async () => {
     isLoadingHandleReview.value = true
     const res = await review.updateOrCreateReview({
         course_id: courseId,
-        comment: courseDetail.user_review.comment,
-        rating_value: courseDetail.user_review.rating_value
+        comment: reviewData.comment,
+        rating_value: reviewData.rating_value
     })
-    console.log(res)
+
+    ElNotification({
+        type: 'success',
+        message: 'Gửi đánh giá thành công',
+        position: 'bottom-right'
+    })
     dialogFormVisible.value = false
     isLoadingHandleReview.value = false
 }
@@ -131,6 +143,7 @@ onMounted(async () => {
     isLoadingPage.value = true
     const res = await course.detail(courseId)
     Object.assign(courseDetail, res.data)
+    Object.assign(reviewData, courseDetail.user_review)
     router.push({
         name: 'learn-course',
         query: {

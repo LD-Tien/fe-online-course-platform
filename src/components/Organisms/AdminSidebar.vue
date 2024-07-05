@@ -5,13 +5,12 @@
             src="@/assets/img/logo-light.png"
             @click="$router.push({ name: 'admin-dashboard' })"
         />
-        <el-menu-item index="admin-dashboard" @click="$router.push({ name: 'admin-dashboard' })">
-            <el-icon><icon-menu /></el-icon>
-            <span>Dashboard</span>
-        </el-menu-item>
         <el-menu-item index="admin-category" @click="$router.push({ name: 'admin-category' })">
             <el-icon><icon-menu /></el-icon>
-            <span>Category</span>
+            <span>Quản lý thể loại</span> </el-menu-item
+        ><el-menu-item index="admin-user-manager" @click="$router.push({ name: 'admin-category' })">
+            <el-icon><icon-menu /></el-icon>
+            <span>Quản lý tài khoản</span>
         </el-menu-item>
     </el-menu>
 </template>

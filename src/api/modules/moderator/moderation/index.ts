@@ -48,3 +48,11 @@ export const moderationLesson = async (courseId: number, moduleId: number, lesso
         return Promise.reject(error)
     }
 }
+
+export const updateCourse = async (courseId: number, course: any) => {
+    try {
+        return await axios.put(`/moderator/courses/${courseId}`, course)
+    } catch (error) {
+        return Promise.reject(error)
+    }
+}

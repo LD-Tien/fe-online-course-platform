@@ -9,19 +9,11 @@
         />
         <div class="flex flex-col gap-3 p-3">
             <h3 class="text-2xl font-bold">{{ props.lesson?.name }}</h3>
-            <Ckeditor
-                :editor="ClassicEditor"
-                v-model="description"
-                :config="{
-                    toolbar: []
-                }"
-            />
+            <span v-html="description"></span>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-
 const props = defineProps(['lesson', 'currentTime'])
 const route = useRoute()
 const videoPlayer = ref()

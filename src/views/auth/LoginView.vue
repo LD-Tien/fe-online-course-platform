@@ -3,7 +3,7 @@
         <router-link :to="{ name: 'home' }" style="display: block; width: 175px; margin: auto">
             <base-icon name="logo-light" />
         </router-link>
-        <h2 class="text-2xl">Log In</h2>
+        <h2 class="text-2xl">Đăng nhập</h2>
         <el-form
             size="large"
             label-position="top"
@@ -21,7 +21,7 @@
                     v-model="ruleForm.email"
                     type="email"
                     autocomplete="off"
-                    placeholder="enter your email"
+                    placeholder="Nhập email"
                 />
             </el-form-item>
             <el-form-item label="Password" prop="pass">
@@ -30,7 +30,7 @@
                     v-model="ruleForm.password"
                     type="password"
                     autocomplete="off"
-                    placeholder="enter your password"
+                    placeholder="Nhật mật khẩu"
                     show-password
                 />
             </el-form-item>
@@ -40,26 +40,24 @@
                     @click="submitForm(ruleFormRef)"
                     :loading="store.state.loading.isLoading"
                 >
-                    Log In
+                    Đăng nhập
                 </el-button>
                 <el-button type="primary" link
-                    ><router-link :to="{ name: 'register' }">Sign Up</router-link>
+                    ><router-link :to="{ name: 'register' }">Đăng ký</router-link>
                 </el-button>
                 <div class="flex-grow"></div>
                 <el-button link type="primary">
-                    <RouterLink :to="{ name: 'forgot-password' }">
-                        Forgot your password?
-                    </RouterLink>
+                    <RouterLink :to="{ name: 'forgot-password' }"> Quên mật khẩu? </RouterLink>
                 </el-button>
             </el-form-item>
         </el-form>
-        <el-divider content-position="center">Or</el-divider>
+        <!-- <el-divider content-position="center">Or</el-divider>
         <el-button style="width: 100%" size="large">
             <el-space>
                 <base-icon name="google" />
                 <span>Log in with Google</span>
             </el-space>
-        </el-button>
+        </el-button> -->
     </div>
 </template>
 
@@ -122,7 +120,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                         router.push({ name: 'moderator-dashboard', replace: true })
                         break
                     case UserRole.INSTRUCTOR:
-                        router.push({ name: 'instructor-dashboard', replace: true })
+                        router.push({ name: 'instructor-course', replace: true })
                         break
                     default:
                         router.push({ name: 'home', replace: true })

@@ -14,7 +14,7 @@
                 v-model="searchText"
                 @input="handleSearchChange"
                 size="default"
-                placeholder="Search"
+                placeholder="Tìm kiếm khóa học"
                 :prefix-icon="Search"
             />
         </el-space>
@@ -33,7 +33,7 @@
                     index="3"
                     class="!ml-auto hidden-sm-and-down"
                 >
-                    Become an instructor
+                    Trở thành người hướng dẫn
                 </el-button>
                 <el-button link v-if="store.state.auth.access_token">
                     <el-badge :value="3" class="item">
@@ -57,25 +57,25 @@
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>Profile account</el-dropdown-item>
-                        <el-dropdown-item>My learning</el-dropdown-item>
+                        <el-dropdown-item>Thông tin tài khoản</el-dropdown-item>
+                        <el-dropdown-item>Khóa học đã tham gia</el-dropdown-item>
                         <el-dropdown-item
                             v-if="!(store.state.auth.user?.role === UserRole.INSTRUCTOR)"
                         >
                             <router-link :to="{ name: 'register-instructor' }">
-                                Become an instructor
+                                Trở thành người hướng dẫn
                             </router-link>
                         </el-dropdown-item>
                         <el-dropdown-item
                             v-if="store.state.auth.user?.role === UserRole.INSTRUCTOR"
                         >
                             <router-link :to="{ name: 'instructor-dashboard' }">
-                                Instructor dashboard
+                                Trang người hướng dẫn
                             </router-link>
                         </el-dropdown-item>
                         <el-dropdown-item divided>
                             <el-button type="danger" link @click="handleLogout">
-                                Log Out
+                                Đăng xuất
                             </el-button>
                         </el-dropdown-item>
                     </el-dropdown-menu>
@@ -83,10 +83,10 @@
             </el-dropdown>
             <el-space v-if="!store.state.auth.access_token">
                 <el-button type="primary" size="default">
-                    <RouterLink :to="{ name: 'login' }">Log In</RouterLink>
+                    <RouterLink :to="{ name: 'login' }">Đăng nhập</RouterLink>
                 </el-button>
                 <el-button size="default">
-                    <RouterLink :to="{ name: 'register' }">Sign Up</RouterLink>
+                    <RouterLink :to="{ name: 'register' }">Đăng ký</RouterLink>
                 </el-button>
             </el-space>
         </el-space>

@@ -1,14 +1,51 @@
 <template>
     <div class="flex items-center justify-between p-3">
-        <el-tag type="primary" size="large">{{ CourseStatus[courseForm.status as number] }}</el-tag>
-        <el-button size="large" type="primary" @click="handlePublishCourse">Publish</el-button>
+        <el-tag type="primary" class="mr-auto" size="large">{{
+            CourseStatus[courseForm.status as number]
+        }}</el-tag>
+        <el-button
+            v-if="
+                courseForm.status === CourseStatus.DRAFT ||
+                courseForm.status === CourseStatus.REJECTED
+            "
+            size="large"
+            type="primary"
+            @click="handleChangeStatusCourse(CourseStatus.UNDER_REVIEW)"
+        >
+            Xuất bản khóa học
+        </el-button>
+        <el-button v-if="courseForm.status === CourseStatus.DRAFT" size="large" type="danger">
+            Xóa khóa học
+        </el-button>
+        <el-button
+            v-if="courseForm.status === CourseStatus.UNDER_REVIEW"
+            size="large"
+            type="warning"
+            @click="handleChangeStatusCourse(CourseStatus.DRAFT)"
+        >
+            Hủy yêu cầu duyệt
+        </el-button>
+        <el-button
+            v-if="courseForm.status === CourseStatus.PUBLISHED"
+            size="large"
+            type="danger"
+            @click="handleChangeStatusCourse(CourseStatus.UNPUBLISHED)"
+        >
+            Gỡ khóa học
+        </el-button>
     </div>
     <div class="flex flex-col gap-2 overflow-auto">
-        <div v-if="store.state.loading.isLoading">
-            <el-skeleton :rows="10" animated />
+        <div
+            v-if="store.state.loading.isLoading"
+            class="z-10 el-loading-mask"
+            style="display: flex; align-items: center; justify-content: center"
+        >
+            <el-icon class="is-loading" color="var(--el-color-primary)" :size="26">
+                <loading />
+            </el-icon>
         </div>
         <el-tabs v-else type="border-card" class="demo-tabs">
-            <el-tab-pane label="Overview">
+            <el-tab-pane label="Tổng quan">
                 <el-form ref="formRef" :model="courseForm" class="flex gap-2 demo-ruleForm">
                     <div>
                         <label for="input-thumbnail-file">
@@ -69,13 +106,12 @@
                             :config="{}"
                         />
                         <el-form-item class="mt-4">
-                            <el-button type="primary" @click="handleSubmit">Save</el-button>
-                            <el-button>Reset</el-button>
+                            <el-button type="primary" @click="handleSubmit">Lưu</el-button>
                         </el-form-item>
                     </div>
                 </el-form>
             </el-tab-pane>
-            <el-tab-pane label="Curriculum">
+            <el-tab-pane label="Chương trình giảng dạy">
                 <div class="flex flex-col gap-2">
                     <el-collapse>
                         <draggableComponent
@@ -113,9 +149,8 @@
                                                         })
                                                     "
                                                 >
-                                                    Add Lesson
+                                                    Thêm bài giảng
                                                 </el-button>
-                                                <el-button disabled>Add Quiz</el-button>
                                                 <el-popconfirm
                                                     @confirm="
                                                         handleDeleteModule(module.id as number)
@@ -186,17 +221,21 @@
                             </template>
                         </draggableComponent>
                     </el-collapse>
-                    <el-button type="primary" @click="handleAddModule">Add module</el-button>
+                    <el-button type="primary" @click="handleAddModule">Thêm chương</el-button>
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="Price">Price</el-tab-pane>
-            <el-tab-pane label="Publish">Publish</el-tab-pane>
+            <!-- <el-tab-pane label="Thảo luận">Thảo luận</el-tab-pane>
+            <el-tab-pane label="Đánh giá">Đánh giá</el-tab-pane> -->
         </el-tabs>
     </div>
-    <el-dialog v-model="modalLessonFormVisible" title="Course">
+    <el-dialog v-model="modalLessonFormVisible" title="Bài giảng">
         <el-form :model="lessonForm" label-position="top">
             <el-form-item>
-                <el-input v-model="lessonForm.name" autocomplete="off" placeholder="lesson name" />
+                <el-input
+                    v-model="lessonForm.name"
+                    autocomplete="off"
+                    placeholder="Tên bài giảng"
+                />
             </el-form-item>
             <el-upload
                 ref="uploadVideo"
@@ -213,11 +252,11 @@
             >
                 <template #trigger>
                     <el-button type="primary" v-if="!videoUrl || lessonForm.video_path">
-                        Click to upload
+                        Chọn file MP4
                     </el-button>
                 </template>
                 <template #tip>
-                    <div class="el-upload__tip">mp4 file with a size less than 500mb</div>
+                    <div class="el-upload__tip">Tập tin mp4 phải có kích thước thấp hơn 500mb</div>
                 </template>
             </el-upload>
             <video class="w-full" :src="videoUrl" ref="videoPreview" controls></video>
@@ -225,23 +264,27 @@
         </el-form>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="modalLessonFormVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="handleCreateOrUpdateLesson(lessonForm)">
-                    Save
+                <el-button @click="modalLessonFormVisible = false">Hủy</el-button>
+                <el-button
+                    @loading="isLoadingCreateLesson"
+                    type="primary"
+                    @click="handleCreateOrUpdateLesson(lessonForm)"
+                >
+                    Lưu
                 </el-button>
             </div>
         </template>
     </el-dialog>
-    <el-dialog v-model="modalModuleFormVisible" title="Module">
+    <el-dialog v-model="modalModuleFormVisible" title="Chương">
         <el-form :model="moduleForm" label-position="top">
-            <el-form-item label="Module name">
+            <el-form-item label="Tên chương">
                 <el-input v-model="moduleForm.name" autocomplete="off" />
             </el-form-item>
         </el-form>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="modalModuleFormVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="handleUpdateModule(moduleForm)"> Save </el-button>
+                <el-button @click="modalModuleFormVisible = false">Hủy</el-button>
+                <el-button type="primary" @click="handleUpdateModule(moduleForm)"> Lưu </el-button>
             </div>
         </template>
     </el-dialog>
@@ -306,13 +349,14 @@ const videoFile = ref<any>()
 const videoPreview = ref()
 const uploadVideo = ref()
 const store = useStore()
+const isLoadingCreateLesson = ref(false)
 
 const nextOrdinalNumber = computed(() => {
     const currentOrdinalNumber = courseForm.modules?.reduce((acc, crr) => {
         return crr.ordinal_number > acc ? crr.ordinal_number : acc
-    }, 1)
+    }, 0)
 
-    return (currentOrdinalNumber ?? 0) + 1
+    return currentOrdinalNumber + 1
 })
 
 const videoUrl = computed(() => {
@@ -375,11 +419,16 @@ const handleSubmit = async () => {
 const handleAddModule = async () => {
     try {
         const response: any = await createModule(courseId, {
-            name: 'New module',
+            name: 'Chương mới',
             ordinal_number: nextOrdinalNumber.value as number
         })
         courseForm.modules?.push(response.data)
-        showToast(response.message, ToastType.SUCCESS)
+        ElNotification({
+            title: 'SUCCESS!',
+            message: 'Add module successfully!.',
+            type: 'success',
+            position: 'bottom-right'
+        })
     } catch (error) {
         showToast('Create module fail.', ToastType.ERROR)
     }
@@ -408,7 +457,12 @@ const handleDeleteModule = async (moduleId: number) => {
         courseForm.modules = courseForm.modules?.filter((item) => {
             return item.id !== moduleId
         })
-        showToast(response.message, ToastType.SUCCESS)
+        ElNotification({
+            title: 'SUCCESS!',
+            message: 'Xóa chương thành công!.',
+            type: 'success',
+            position: 'bottom-right'
+        })
     } catch (error) {
         showToast('Delete module fail.', ToastType.ERROR)
     }
@@ -423,7 +477,12 @@ const handleUpdateModule = async (module: Module) => {
             }) as Module,
             response.data
         )
-        showToast(response.message, ToastType.SUCCESS)
+        ElNotification({
+            title: 'SUCCESS!',
+            message: 'Cập nhật chương thành công!.',
+            type: 'success',
+            position: 'bottom-right'
+        })
         modalModuleFormVisible.value = false
     } catch (error) {
         showToast('Delete module fail.', ToastType.ERROR)
@@ -456,6 +515,7 @@ const handleCreateOrUpdateLesson = async (lesson: Lesson) => {
 
     if (lesson.id) {
         try {
+            isLoadingCreateLesson.value = true
             const response = await updateLesson(courseId, lesson.module_id, lesson.id, formData)
             Object.assign(
                 //@ts-ignore
@@ -464,6 +524,7 @@ const handleCreateOrUpdateLesson = async (lesson: Lesson) => {
                     ?.lessons?.find((item) => item.id === lesson.id),
                 response.data.data
             )
+            isLoadingCreateLesson.value = false
             showToast(response.data.message, ToastType.SUCCESS)
         } catch (error) {
             showToast('Update lesson fail', ToastType.ERROR)
@@ -531,14 +592,15 @@ const handleChangeLessonOrdinalNumber = async (moduleIndex: number) => {
     }
 }
 
-const handlePublishCourse = async () => {
+const handleChangeStatusCourse = async (courseStatus: number) => {
     try {
         const formData = new FormData()
-        formData.append('status', CourseStatus.UNDER_REVIEW)
+        formData.append('status', courseStatus + '')
         const response = await updateCourse(formData, courseId)
+        Object.assign(courseForm, response.data)
         ElNotification({
             title: 'SUCCESS!',
-            message: 'Update course successfully!. Please try again later.',
+            message: 'Update course successfully!',
             type: 'success',
             position: 'bottom-right'
         })

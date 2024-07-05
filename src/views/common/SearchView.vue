@@ -7,9 +7,11 @@
     <div v-else class="flex flex-col gap-10">
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Result for "{{ $route.params.keyword }}"</h2>
+                <h2 class="text-2xl font-bold">
+                    Kết quả tìm kiếm của từ khóa "{{ $route.params.keyword }}"
+                </h2>
                 <div class="flex gap-3">
-                    <el-select placeholder="Filter" style="width: 240px">
+                    <el-select placeholder="Lọc" style="width: 240px">
                         <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -17,7 +19,7 @@
                             :value="item.value"
                         />
                     </el-select>
-                    <el-select placeholder="Sort" style="width: 240px">
+                    <el-select placeholder="Xắp xếp" style="width: 240px">
                         <el-option
                             v-for="item in sortOptions"
                             :key="item.value"
@@ -25,7 +27,7 @@
                             :value="item.value"
                         />
                     </el-select>
-                    <el-select placeholder="Category" style="width: 240px">
+                    <el-select placeholder="Thể loại" style="width: 240px">
                         <el-option
                             v-for="item in categories"
                             :key="item.id"
@@ -60,12 +62,9 @@
                     </router-link>
                     <br />
                     <el-rate v-model="value" disabled show-score score-template="{value} (100)" />
-                    <div v-if="course.price" class="flex items-center gap-2">
-                        <span class="text-xl font-bold">${{ course.price }}</span>
-                        <span class="font-semibold line-through">$400</span>
-                    </div>
-                    <div v-else class="block">
-                        <span>Free</span>
+
+                    <div class="block">
+                        <span>Miễn phí</span>
                     </div>
                 </el-card>
             </div>

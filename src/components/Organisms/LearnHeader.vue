@@ -10,9 +10,9 @@
             </router-link>
         </div>
         <div class="inline-flex items-center gap-3 w-fit">
-            <el-button @click="emits('setModalVisible')">Review this course </el-button>
+            <el-button @click="emits('setModalVisible')">Đánh giá khóa học này</el-button>
             <span class="inline-block text-sm font-medium w-fit text-nowrap">
-                {{ props.totalCompletedLessons }}/{{ totalLessons }} Lessons
+                {{ props.totalCompletedLessons }}/{{ totalLessons }} Bài giảng
             </span>
             <el-progress :width="50" type="circle" :percentage="props.progress" :color="colors" />
         </div>

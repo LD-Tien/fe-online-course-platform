@@ -2,7 +2,7 @@
     <div
         class="container w-[600px] flex flex-col items-center justify-center h-screen gap-2 mx-auto"
     >
-        <h1 class="text-2xl font-bold">Become an instructor</h1>
+        <h1 class="text-2xl font-bold">Trở thành người hướng dẫn</h1>
         <div class="relative">
             <img
                 :src="avatarPreviewSrc"
@@ -25,15 +25,15 @@
         </div>
         <div class="w-full">
             <ckeditor
-                placeholder="hello d"
+                placeholder="Giới thiệu về bản thân"
                 v-model="biography"
                 :editor="ClassicEditor"
                 :config="{}"
             />
         </div>
         <div class="flex w-full">
-            <el-button type="primary" @click="handleSubmit">Register</el-button>
-            <el-button>Back</el-button>
+            <el-button type="primary" @click="handleSubmit">Đăng ký</el-button>
+            <el-button @click="$router.back()">Trở về</el-button>
         </div>
         <div v-if="errorMessage" class="text-red-500">{{ errorMessage }}</div>
     </div>

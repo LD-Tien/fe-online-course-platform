@@ -3,7 +3,7 @@
         <div style="display: block; width: 175px; margin: auto">
             <base-icon name="logo-light" />
         </div>
-        <h2 class="text-2xl">Sign Up</h2>
+        <h2 class="text-2xl">Đăng ký tài khoản</h2>
         <el-form
             size="large"
             label-position="top"
@@ -21,26 +21,26 @@
                     v-model="ruleForm.email"
                     type="email"
                     autocomplete="off"
-                    placeholder="enter your email"
+                    placeholder="Nhập email"
                 />
             </el-form-item>
-            <el-form-item label="Password" prop="password">
+            <el-form-item label="Mật khẩu" prop="password">
                 <el-input
                     prefix-icon="Lock"
                     v-model="ruleForm.password"
                     type="password"
                     autocomplete="off"
-                    placeholder="enter your password"
+                    placeholder="Nhập password"
                     show-password
                 />
             </el-form-item>
-            <el-form-item label="Confirm password" prop="password_confirmation">
+            <el-form-item label="Nhập lại mật khẩu" prop="password_confirmation">
                 <el-input
                     prefix-icon="Lock"
                     v-model="ruleForm.password_confirmation"
                     type="password"
                     autocomplete="off"
-                    placeholder="enter your confirm password"
+                    placeholder="Nhập lai mật khẩu"
                     show-password
                 />
             </el-form-item>
@@ -50,11 +50,11 @@
                     @click="submitForm(ruleFormRef)"
                     :loading="store.state.loading.isLoading"
                 >
-                    Sign Up
+                    Đăng ký
                 </el-button>
                 <div class="flex-grow"></div>
                 <el-button type="primary" link>
-                    <router-link :to="{ name: 'login' }">Log In</router-link>
+                    <router-link :to="{ name: 'login' }">Đăng nhập</router-link>
                 </el-button>
             </el-form-item>
         </el-form>

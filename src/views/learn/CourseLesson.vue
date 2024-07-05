@@ -13,7 +13,7 @@
                     <h1 class="text-xl font-bold">{{ lesson.name }}</h1>
                     <el-badge :value="comments.length" class="item" type="warning">
                         <el-button type="primary" @click="handleOpenDrawer(lesson.id)">
-                            Q&A
+                            Thảo luận
                         </el-button>
                     </el-badge>
                 </div>
@@ -31,14 +31,14 @@
                     v-model="commentData.content"
                     :rows="2"
                     type="textarea"
-                    placeholder="Input your question"
+                    placeholder="Nhập câu hỏi của bạn"
                 />
                 <el-button
                     @click.stop="handleAddComment(lesson.id)"
                     :loading="isLoadingHandleAddComment"
                     :disabled="!commentData.content || commentData.content.trim() === ''"
                 >
-                    Add Question
+                    Thêm Câu Hỏi
                 </el-button>
                 <div class="flex flex-col gap-3">
                     <div class="flex flex-col items-start w-full gap-2">
@@ -54,7 +54,7 @@
                                     class="flex-none"
                                 />
                                 <span class="text-sm font-medium">{{ comment.rating_number }}</span>
-                                <span class="text-xs"> vote</span>
+                                <span class="text-xs text-nowrap">Hữu ích</span>
                             </div>
                             <div class="flex flex-col justify-start w-full gap-3">
                                 <div class="flex flex-col">
@@ -124,7 +124,7 @@
                                             link
                                             type="primary"
                                         >
-                                            Reply to
+                                            Trả lời
                                         </el-button>
                                     </div>
                                     <el-input
@@ -132,7 +132,7 @@
                                         v-model="replyData.content"
                                         :rows="2"
                                         type="textarea"
-                                        placeholder="Input your answer"
+                                        placeholder="Nhập câu trả lời"
                                         class="mt-1"
                                     />
                                     <div class="flex gap-1 mt-1">
@@ -146,13 +146,13 @@
                                             "
                                             v-show="comment.id === showInputReply"
                                         >
-                                            Add Answer
+                                            Thêm Câu Trả Lời
                                         </el-button>
                                         <el-button
                                             @click.stop="showInputReply = 0"
                                             v-show="comment.id === showInputReply"
                                         >
-                                            Cancel
+                                            Hủy
                                         </el-button>
                                     </div>
                                 </div>
@@ -170,14 +170,14 @@
                                         <span class="text-sm font-medium">
                                             {{ reply.rating_number }}
                                         </span>
-                                        <span class="text-xs"> vote</span>
+                                        <span class="text-xs text-nowrap">Hữu ích</span>
                                     </div>
                                     <div class="flex flex-col justify-start w-full">
                                         <div class="flex justify-between">
                                             <span class="flex-1 text-sm font-medium">
                                                 {{
                                                     reply.user.id === store.state.auth.user?.id
-                                                        ? 'You'
+                                                        ? 'Bạn'
                                                         : reply.user.name
                                                 }}
                                             </span>
@@ -256,7 +256,9 @@ import store from '@/store'
 import { ArrowDownBold, ArrowUpBold, Delete } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import vi from 'dayjs/locale/vi'
 
+dayjs.locale(vi)
 dayjs.extend(relativeTime)
 
 const drawer = ref(false)

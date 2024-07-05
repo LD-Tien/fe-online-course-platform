@@ -5,7 +5,7 @@
                 style="width: 240px"
                 @input="handleSearchChange(searchText)"
                 v-model="searchText"
-                placeholder="Search by name, id"
+                placeholder="Tìm kiếm bằng tên, id"
             >
                 <template #prefix>
                     <el-icon class="el-input__icon"><search /></el-icon>
@@ -15,7 +15,7 @@
                 v-model="optionSelected"
                 @change="handleFilterStatusChange"
                 class="mr-auto"
-                placeholder="Select"
+                placeholder="Trạng thái"
                 style="width: 240px"
             >
                 <el-option
@@ -35,7 +35,7 @@
                 @current-change="handleCurrentPageChange"
             />
             <el-button type="primary" @click="dialogFormVisible = true" small>
-                Add New Course
+                Thêm khóa học
             </el-button>
         </div>
         <div
@@ -48,9 +48,9 @@
             </el-icon>
         </div>
         <el-table v-else :data="tableData">
-            <el-table-column fixed="left" prop="id" label="ID" width="150" />
-            <el-table-column prop="course_name" label="Course name" width="300" />
-            <el-table-column prop="thumbnail" label="Thumbnail" width="120">
+            <el-table-column fixed="left" prop="id" label="Mã khóa học" width="150" />
+            <el-table-column prop="course_name" label="Tên khóa học" width="300" />
+            <el-table-column prop="thumbnail" label="Ảnh bìa" width="120">
                 <template #default="scope">
                     <el-image
                         style="width: 100px; height: 100px"
@@ -59,59 +59,82 @@
                     />
                 </template>
             </el-table-column>
-            <el-table-column prop="price" label="Price" width="120">
+            <!-- <el-table-column prop="price" label="Price" width="120">
                 <template #default="scope">
                     {{ scope.row.price === 0 ? 'Free' : scope.row.price }}
                 </template>
-            </el-table-column>
-            <el-table-column prop="status" label="Status" width="200">
+            </el-table-column> -->
+            <el-table-column prop="status" label="Trạng thái" width="200">
                 <template #default="scope">
                     <el-tag>{{ CourseStatus[scope.row.status] }}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="Created at" width="200">
+            <el-table-column label="Ngày tạo" width="200">
                 <template #default="scope">
                     {{ dayjs(scope.row.created_at).format('YYYY-MM-DD HH:mm') }}
                 </template>
             </el-table-column>
-            <el-table-column label="Updated at" width="200">
+            <el-table-column label="Ngày cập nhật" width="200">
                 <template #default="scope">
                     {{ dayjs(scope.row.updated_at).format('YYYY-MM-DD HH:mm') }}
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="Operations" width="200">
+            <el-table-column fixed="right" label="" width="300">
                 <template #default="scope">
-                    <el-button
-                        type="primary"
-                        size="small"
-                        @click="
-                            $router.push({
-                                name: 'instructor-course-editor',
-                                params: { courseId: scope.row.id }
-                            })
-                        "
-                        >Edit
-                    </el-button>
-                    <el-popconfirm
-                        title="Are you sure to delete this?"
-                        @confirm="handleDelete(scope.$index, scope.row)"
-                    >
-                        <template #reference>
-                            <el-button size="small" type="danger">Delete</el-button>
-                        </template>
-                    </el-popconfirm>
+                    <div class="flex">
+                        <el-button
+                            type="primary"
+                            size="small"
+                            @click="
+                                $router.push({
+                                    name: 'instructor-course-editor',
+                                    params: { courseId: scope.row.id }
+                                })
+                            "
+                        >
+                            Chi tiết
+                        </el-button>
+                        <el-popconfirm
+                            title="Are you sure to delete this?"
+                            @confirm="handleDelete(scope.$index, scope.row)"
+                        >
+                            <template #reference>
+                                <el-button
+                                    v-if="scope.row.status === CourseStatus.DRAFT"
+                                    size="small"
+                                    type="danger"
+                                >
+                                    Xóa khóa học
+                                </el-button>
+                                <el-button
+                                    v-if="scope.row.status === CourseStatus.UNDER_REVIEW"
+                                    size="small"
+                                    type="warning"
+                                >
+                                    Hủy yêu cầu duyệt
+                                </el-button>
+                                <el-button
+                                    v-if="scope.row.status === CourseStatus.PUBLISHED"
+                                    size="small"
+                                    type="danger"
+                                >
+                                    Gỡ khóa học
+                                </el-button>
+                            </template>
+                        </el-popconfirm>
+                    </div>
                 </template>
             </el-table-column>
         </el-table>
-        <el-dialog v-model="dialogFormVisible" title="Create course" width="500">
+        <el-dialog v-model="dialogFormVisible" title="Tạo khóa học" width="500">
             <el-form :model="createCourseForm">
-                <el-form-item label="Course name" label-with="140px">
+                <el-form-item label="Tên khóa học" label-with="140px">
                     <el-input v-model="createCourseForm.course_name" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="Category" label-with="140px">
+                <el-form-item label="Thể loại" label-with="140px">
                     <el-select
                         v-model="createCourseForm.category_id"
-                        placeholder="Please select category"
+                        placeholder="Vui lòng chọn thể loại"
                     >
                         <el-option
                             v-for="item in categories"
@@ -124,8 +147,8 @@
             </el-form>
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false">Cancel</el-button>
-                    <el-button type="primary" @click="handleCreateCourse"> Create </el-button>
+                    <el-button @click="dialogFormVisible = false">Hủy</el-button>
+                    <el-button type="primary" @click="handleCreateCourse"> Tạo </el-button>
                 </div>
             </template>
         </el-dialog>
@@ -149,7 +172,7 @@ const optionsFilterByStatus = ref(
         .filter((item) => typeof item === 'number')
         .map((item: any) => ({ value: item, label: CourseStatus[item] }))
 )
-const optionSelected = ref(1)
+const optionSelected = ref()
 const createCourseForm = reactive<Course>({
     course_name: '',
     category_id: 0

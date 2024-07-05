@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { getCourse } from '@/api/modules/moderator/moderation'
 import type { ModerationLesson, Course, Module } from '@/api/modules/moderator/moderation/types'
+import Echo from '../../resources/js/echo'
 
 const route = useRoute()
 const currentTime = ref(0)
@@ -51,6 +52,26 @@ const currentModule = reactive<Module>({
     ordinal_number: 0,
     course_id: route.params.courseId as any,
     lessons: []
+})
+
+Echo.channel('my-channel').listen('.my-event', async (event: any) => {
+    console.log(event)
+    ElNotification({ message: event.message, type: 'success' })
+    const response = await getCourse(route.params.courseId)
+    console.log(response)
+    Object.assign(course, response.data)
+    course.modules = course.modules?.sort((a, b) => a.ordinal_number - b.ordinal_number)
+    course.modules?.forEach((module) => {
+        module.lessons?.sort((a, b) => a.ordinal_number - b.ordinal_number)
+    })
+    Object.assign(
+        currentModule,
+        course.modules && course.modules.find((module) => module.id + '' === route.params.moduleId)
+    )
+    Object.assign(
+        currentLesson,
+        currentModule.lessons?.find((lesson) => lesson.id + '' === route.params.lessonId)
+    )
 })
 
 watch(

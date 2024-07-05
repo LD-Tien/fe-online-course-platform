@@ -1,9 +1,8 @@
 <template>
     <el-row>
         <el-col :span="24">
-            <el-result size="large" title="Verify your email">
+            <el-result size="large" title="Xác Thực Email">
                 <template #icon>
-                    <base-icon name="logo-light" />
                     <div>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -27,19 +26,19 @@
 
                 <template #sub-title>
                     <el-text size="large">
-                        We have sent a verification link to
+                        Chúng tôi đã gửi link đến email của bạn
                         <!-- {{ user ? user.email : router.push({ name: 'login', replace: true }) }} -->
                     </el-text>
                     <br />
                     <br />
                     <el-text size="default">
-                        Please check your email and click the link to active your account
+                        Vui lòng kiểm tra email của bạn và bấm vào liên kết kích hoạt tài khoản
                     </el-text>
                 </template>
                 <template #extra>
-                    <el-button type="primary" size="large" icon="Message">Resend</el-button>
+                    <el-button type="primary" size="large" icon="Message">Gửi lại</el-button>
                     <el-button type="primary" link size="large">
-                        <RouterLink :to="{ name: 'home' }">Return to Site</RouterLink>
+                        <RouterLink :to="{ name: 'home' }">Trở về</RouterLink>
                         <el-icon class="el-icon--right">
                             <Right />
                         </el-icon>
@@ -50,9 +49,4 @@
     </el-row>
 </template>
 
-<script setup lang="ts">
-const store = useStore()
-const router = useRouter()
-const user = store.state.auth.user
-console.log('123123123')
-</script>
+<script setup lang="ts"></script>

@@ -16,8 +16,8 @@
         </div>
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Trending Courses</h2>
-                <el-button link size="large">View more</el-button>
+                <h2 class="text-2xl font-bold">Khóa học nổi bật</h2>
+                <el-button link size="large">Xem thêm</el-button>
             </div>
             <div class="grid grid-cols-4 gap-3">
                 <el-card
@@ -44,20 +44,16 @@
                     </router-link>
                     <br />
                     <el-rate v-model="value" disabled show-score score-template="{value} (100)" />
-                    <div v-if="course.price" class="flex items-center gap-2">
-                        <span class="text-xl font-bold">${{ course.price }}</span>
-                        <span class="font-semibold line-through">$400</span>
-                    </div>
-                    <div v-else class="block">
-                        <span>Free</span>
+                    <div class="block">
+                        <span>Miễn phí</span>
                     </div>
                 </el-card>
             </div>
         </div>
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Recommend For You</h2>
-                <el-button link size="large">View more</el-button>
+                <h2 class="text-2xl font-bold">Đề xuất cho bạn</h2>
+                <el-button link size="large">Xem thêm</el-button>
             </div>
             <div class="grid grid-cols-4 gap-3">
                 <el-card
@@ -82,20 +78,16 @@
                     </router-link>
                     <br />
                     <el-rate v-model="value" disabled show-score score-template="{value} (100)" />
-                    <div v-if="course.price" class="flex items-center gap-2">
-                        <span class="text-xl font-bold">${{ course.price }}</span>
-                        <span class="font-semibold line-through">$400</span>
-                    </div>
-                    <div v-else class="block">
-                        <span>Free</span>
+                    <div class="block">
+                        <span>Miễn phí</span>
                     </div>
                 </el-card>
             </div>
         </div>
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Your Learning</h2>
-                <el-button link size="large">View more</el-button>
+                <h2 class="text-2xl font-bold">Khóa học đã tham gia</h2>
+                <el-button link size="large">Xem thêm</el-button>
             </div>
             <div class="grid grid-cols-4 gap-3">
                 <el-card
@@ -120,12 +112,8 @@
                     </router-link>
                     <br />
                     <el-rate v-model="value" disabled show-score score-template="{value} (100)" />
-                    <div v-if="course.price" class="flex items-center gap-2">
-                        <span class="text-xl font-bold">${{ course.price }}</span>
-                        <span class="font-semibold line-through">$400</span>
-                    </div>
-                    <div v-else class="block">
-                        <span>Free</span>
+                    <div class="block">
+                        <span>Miễn phí</span>
                     </div>
                 </el-card>
             </div>

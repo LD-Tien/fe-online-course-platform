@@ -1,4 +1,4 @@
-import type { Lesson } from '@/api/modules/lesson/types'
+import type { Lesson } from '@/api/modules/instructor/lesson/types'
 
 export interface Course {
     id?: number

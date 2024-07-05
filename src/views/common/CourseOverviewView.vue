@@ -9,7 +9,7 @@
             <el-row :gutter="24">
                 <el-col :span="24" style="margin-bottom: 20px">
                     <el-breadcrumb :separator-icon="ArrowRight">
-                        <el-breadcrumb-item :to="{ name: 'home' }">Home</el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ name: 'home' }">Trang chủ</el-breadcrumb-item>
                         <el-breadcrumb-item>{{ courseDetail.category?.name }}</el-breadcrumb-item>
                         <el-breadcrumb-item>{{ courseDetail.course_name }}</el-breadcrumb-item>
                     </el-breadcrumb>
@@ -34,8 +34,9 @@
                         <el-rate
                             size="large"
                             disabled
+                            v-model="value"
                             show-score
-                            score-template="{value} (100 ratings) 1000 students"
+                            score-template="{value} (2 ratings) 2 students"
                         />
                         <el-space>
                             <el-text size="default">
@@ -51,7 +52,7 @@
                     <el-row>
                         <el-col :span="24">
                             <el-space fill direction="vertical" style="width: 100%">
-                                <h3 class="text-2xl font-bold">Description</h3>
+                                <h3 class="text-2xl font-bold">Mô tả khóa học</h3>
                                 <span v-html="courseDetail.description"></span>
                                 <!-- <el-text size="default">{{ courseDetail.description }}</el-text> -->
                             </el-space>
@@ -61,11 +62,11 @@
                     <el-row>
                         <el-col :span="24">
                             <el-space fill direction="vertical" style="width: 100%">
-                                <h3 class="text-2xl font-bold">Course content</h3>
+                                <h3 class="text-2xl font-bold">Nội dung khóa học</h3>
                                 <el-text>
-                                    {{ totalModule }} sections • {{ totalLesson }} lectures •
+                                    {{ totalModule }} chương • {{ totalLesson }} bài giảng • thời
+                                    lượng khóa học
                                     {{ totalDuration }}
-                                    total length
                                 </el-text>
                                 <div class="demo-collapse">
                                     <el-collapse>
@@ -85,7 +86,7 @@
                                                         {{ module.name }}
                                                     </span>
                                                     <span class="text-sm font-medium">
-                                                        {{ module.lessons.length }} lectures -
+                                                        {{ module.lessons.length }} bài giảng -
                                                         {{ getTotalDurationFromModule(module) }}
                                                     </span>
                                                 </div>
@@ -132,8 +133,8 @@
                         <el-col :span="24">
                             <div class="flex flex-col gap-3">
                                 <div class="flex justify-between">
-                                    <h3 class="text-2xl font-bold">Reviews</h3>
-                                    <el-select placeholder="Select" style="width: 240px">
+                                    <h3 class="text-2xl font-bold">Đánh giá</h3>
+                                    <el-select placeholder="Lọc" style="width: 240px">
                                         <el-option
                                             v-for="item in options"
                                             :key="item.value"
@@ -144,45 +145,60 @@
                                 </div>
                                 <div class="flex">
                                     <div class="flex flex-col items-center gap-1">
-                                        <span class="text-3xl font-bold text-[#ff9900]">4.5</span>
-                                        <el-rate :model-value="3" disabled text-color="#ff9900" />
-                                        <span>Course rating</span>
+                                        <span class="text-3xl font-bold text-[#ff9900]">4.0</span>
+                                        <el-rate :model-value="4" disabled text-color="#ff9900" />
+                                        <span>Đánh giá</span>
                                     </div>
                                     <div class="flex flex-col flex-1">
-                                        <el-progress :percentage="50" color="#ff9900">
+                                        <el-progress :percentage="0" color="#ff9900">
                                             <el-rate
                                                 disabled
                                                 :model-value="5"
                                                 text-color="#ff9900"
                                             />
+                                            <el-tag type="warning">
+                                                <div class="w-10 text-center">0</div></el-tag
+                                            >
                                         </el-progress>
-                                        <el-progress :percentage="25" color="#ff9900">
+                                        <el-progress :percentage="100" color="#ff9900">
                                             <el-rate
                                                 disabled
                                                 :model-value="4"
                                                 text-color="#ff9900"
                                             />
+                                            <el-tag type="warning">
+                                                <div class="w-10 text-center">2</div></el-tag
+                                            >
                                         </el-progress>
-                                        <el-progress :percentage="20" color="#ff9900">
+                                        <el-progress :percentage="0" color="#ff9900">
                                             <el-rate
                                                 disabled
                                                 :model-value="3"
                                                 text-color="#ff9900"
                                             />
+                                            <el-tag type="warning">
+                                                <div class="w-10 text-center">0</div></el-tag
+                                            >
                                         </el-progress>
-                                        <el-progress :percentage="10" color="#ff9900">
+                                        <el-progress :percentage="0" color="#ff9900">
                                             <el-rate
                                                 disabled
                                                 :model-value="2"
                                                 text-color="#ff9900"
                                             />
+                                            <el-tag type="warning">
+                                                <div class="w-10 text-center">0</div></el-tag
+                                            >
                                         </el-progress>
-                                        <el-progress :percentage="5" color="#ff9900">
+                                        <el-progress :percentage="0" color="#ff9900">
                                             <el-rate
                                                 disabled
                                                 :model-value="1"
                                                 text-color="#ff9900"
                                             />
+                                            <el-tag type="warning">
+                                                <div class="w-10 text-center">0</div></el-tag
+                                            >
                                         </el-progress>
                                     </div>
                                 </div>
@@ -206,7 +222,9 @@
                                                 <span class="text-sm font-bold">{{
                                                     review.user.name
                                                 }}</span>
-                                                <span class="text-xs font-normal">Today</span>
+                                                <span class="text-xs font-normal">{{
+                                                    dayjs(review.updated_at).fromNow(true)
+                                                }}</span>
                                             </div>
                                             <el-rate
                                                 v-model="review.rating_value"
@@ -228,16 +246,7 @@
                     <el-space direction="vertical" fill style="width: 100%">
                         <el-space>
                             <el-text size="large" tag="b" type="danger">
-                                <h4 class="text-2xl font-bold">
-                                    {{
-                                        courseDetail.price
-                                            ? new Intl.NumberFormat('en-US', {
-                                                  style: 'currency',
-                                                  currency: 'USD'
-                                              }).format(courseDetail.price)
-                                            : 'Free'
-                                    }}
-                                </h4>
+                                <h4 class="text-2xl font-bold">Miễn phí</h4>
                             </el-text>
                             <!-- <el-text size="large" tag="del">300$</el-text> -->
                         </el-space>
@@ -252,14 +261,12 @@
                             size="large"
                             type="primary"
                         >
-                            Go to course
+                            Bắt đầu học
                         </el-button>
                         <template v-else>
                             <el-button @click="handleEnroll(courseId)" size="large" type="primary">
-                                Enrollment now
+                                Tham gia ngay
                             </el-button>
-                            <el-button size="large" type="primary">Add to cart</el-button>
-                            <el-button size="large">Buy now</el-button>
                         </template>
                     </el-space>
                 </el-col>
@@ -278,12 +285,18 @@ import { course as courseForLearner } from '@/api/modules/learner/course'
 import router from '@/router'
 import { review } from '@/api/modules/common/review'
 import type { Review } from '@/api/modules/common/review/types'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import vi from 'dayjs/locale/vi'
+
+dayjs.locale(vi)
+dayjs.extend(relativeTime)
 
 const isLoadingPage = ref(true)
 const route = useRoute()
 const courseId = parseInt(route.params.courseId as string)
 const courseDetail = reactive<Partial<CourseDetail>>({})
 const reviews = ref<Review[]>([])
+const value = ref(4)
 const totalModule = computed(() => courseDetail.modules?.length)
 const totalLesson = computed(() => {
     return courseDetail.modules?.reduce((totalLesson, currenModule) => {

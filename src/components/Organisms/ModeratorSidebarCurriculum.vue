@@ -3,20 +3,20 @@
         <div class="flex flex-col gap-2 p-3">
             <div class="flex">
                 <el-button
+                    @click="publicCourse(courseId, CourseStatus.PUBLISHED)"
                     type="success"
-                    :disabled="loadingModeration"
+                    :loading="loadingPublicCourse"
                     class="w-full"
-                    @click="handleModerationCourse"
                 >
-                    Publish
+                    Xuất bản khóa học
                 </el-button>
                 <el-button
+                    @click="rejectCourse(courseId, CourseStatus.REJECTED)"
                     type="danger"
-                    :disabled="loadingModeration"
+                    :loading="loadingPublicCourse"
                     class="w-full"
-                    @click="handleModerationCourse"
                 >
-                    Reject
+                    Từ chối duyệt
                 </el-button>
             </div>
             <el-button
@@ -25,7 +25,7 @@
                 class="w-full"
                 @click="handleModerationCourse"
             >
-                Moderation Course By AI
+                Kiểm duyệt khóa học bằng AI
             </el-button>
         </div>
         <div class="overflow-y-auto grow !h-full">
@@ -41,10 +41,10 @@
                             </span>
                             <div class="flex gap-1">
                                 <span class="text-sm font-normal">
-                                    Total video {{ item.lessons.length }} -
+                                    Số bài giảng {{ item.lessons.length }} -
                                 </span>
                                 <span class="text-sm font-normal">
-                                    Duration
+                                    Thời lượng
                                     {{
                                         secondsToHHMMSS(
                                             item.lessons.reduce(
@@ -83,7 +83,7 @@
                                     ...lesson.analysis_video_result_json.results.google.moderation.map(
                                         (item: any) => item.confidence
                                     )
-                                ) >= 0.8
+                                ) >= 0.6
                                     ? 'danger'
                                     : 'primary'
                             "
@@ -92,7 +92,7 @@
                                     ...lesson.analysis_video_result_json.results.google.moderation.map(
                                         (item: any) => item.confidence
                                     )
-                                ) >= 0.8
+                                ) >= 0.6
                                     ? 'WarnTriangleFilled'
                                     : 'InfoFilled'
                             "
@@ -106,12 +106,12 @@
     <el-dialog v-model="dialogTableVisible" width="800">
         <template #header>
             <div class="flex justify-between">
-                <span>AI moderation result</span>
+                <span>Kết quả kiểm duyệt bằng AI</span>
             </div>
         </template>
         <div class="flex flex-col gap-2">
             <div class="flex justify-between">
-                <h1 class="text-xl font-bold">Video moderation result</h1>
+                <h1 class="text-xl font-bold">Kết quả kiểm duyệt video</h1>
                 <el-select
                     v-model="selectedSort"
                     clearable
@@ -128,13 +128,15 @@
                 <el-select
                     v-model="selectedConfidentPercent"
                     clearable
-                    placeholder="Filter by confident percent"
+                    placeholder="Độ chính xác"
                     style="width: 240px"
                 >
                     <el-option
                         v-for="item in filterOptionsConfident"
                         :key="item.value"
-                        :label="item.value < 1.0 ? 'Greater than ' + item.label : item.label"
+                        :label="
+                            item.value < 1.0 ? 'Độ chính xác lớn hơn ' + item.label : item.label
+                        "
                         :value="item.value"
                     />
                 </el-select>
@@ -165,25 +167,27 @@
                         }
                     "
                     :key="index"
-                    :style="{ borderColor: item.confidence >= 0.8 ? 'red' : 'inherit' }"
+                    :style="{ borderColor: item.confidence >= 0.6 ? 'red' : 'inherit' }"
                     class="flex flex-col items-center justify-center p-3 border cursor-pointer hover:shadow-md rounded-xl"
                 >
-                    <span class="text-base font-bold text-blue-400">{{ item.category }}</span>
+                    <!-- <span class="text-base font-bold text-blue-400">{{ item.category }}</span> -->
                     <span class="text-base font-semibold">{{ item.confidence * 100 + '%' }}</span>
                     <span class="text-sm font-bold">{{ secondsToHHMMSS(item.timestamp) }}</span>
                 </div>
             </div>
-            <h1 class="text-xl font-bold">Text moderation result</h1>
+            <h1 class="text-xl font-bold">Kết quả kiểm duyệt văn bản</h1>
             <el-progress
                 :percentage="textModerationScore"
                 :stroke-width="25"
                 :text-inside="true"
                 :color="customColors"
             >
-                <span class="text-slate-700">Inappropriate Content {{ textModerationScore }}%</span>
+                <span class="text-slate-700"
+                    >Nội dung không phù hợp {{ textModerationScore }}%</span
+                >
             </el-progress>
             <el-collapse>
-                <el-collapse-item title="Detail">
+                <el-collapse-item title="Chi tiết">
                     <div v-for="(item, index) in moderationTextResult.openai.items" :key="index">
                         <span>{{ item.label }}</span>
                         <el-progress :percentage="Math.round(item.likelihood_score * 100)">
@@ -196,25 +200,25 @@
 </template>
 
 <script lang="ts" setup>
-import { moderationCourse } from '@/api/modules/moderator/moderation'
+import { CourseStatus } from '@/api/modules/instructor/course/types'
+import { moderationCourse, updateCourse } from '@/api/modules/moderator/moderation'
 import type { ModerationLesson } from '@/api/modules/moderator/moderation/types'
-import { ToastType } from '@/types'
 import { secondsToHHMMSS } from '@/utils/convertHelper'
-import { showToast } from '@/utils/toastHelper'
 
 const props = defineProps(['modules'])
 const route = useRoute()
 const dialogTableVisible = ref(false)
 const courseId: number = parseInt(route.params.courseId as string)
-const selectedConfidentPercent = ref(0.8)
+const selectedConfidentPercent = ref(0.6)
 const selectedSort = ref('timeline')
 const loadingModeration = ref(false)
+const loadingPublicCourse = ref(false)
 const moderationVideoResult = ref<any>([])
 const moderationTextResult = ref<any>([])
 const sortOptionsConfident = [
-    { label: 'Timeline', value: 'timeline' },
-    { label: 'Ascending', value: 'ascending' },
-    { label: 'Decrease', value: 'decrease' }
+    { label: 'Dòng thời gian', value: 'timeline' },
+    { label: 'Độ chính xác tăng dần', value: 'ascending' },
+    { label: 'Độ chính xác giảm dần', value: 'decrease' }
 ]
 
 const filterOptionsConfident = [
@@ -292,10 +296,59 @@ const handleModerationCourse = async () => {
     loadingModeration.value = true
     try {
         const response = await moderationCourse(courseId)
+        ElNotification({
+            message: 'Đã gửi yêu cầu kiểm duyệt khóa học bằng AI. Vui lòng chờ đợi.',
+            type: 'success',
+            position: 'bottom-right'
+        })
         console.log(response)
     } catch (error) {
-        showToast('Moderation by AI fail. Please try again', ToastType.ERROR)
+        ElNotification({
+            message: 'Kiểm duyệt bằng AI thất bại. Vui lòng thử lại sau.',
+            type: 'error',
+            position: 'bottom-right'
+        })
     }
     loadingModeration.value = false
+}
+
+const publicCourse = async (courseId: number, status: number) => {
+    try {
+        loadingPublicCourse.value = true
+        const response = await updateCourse(courseId, { status })
+        ElNotification({
+            message: 'Xuất bản khóa học thành công.',
+            type: 'success',
+            position: 'bottom-right'
+        })
+        console.log(response)
+        loadingPublicCourse.value = false
+    } catch (error) {
+        ElNotification({
+            message: 'Xuất bản khóa học thất bại. Vui lòng thử lại sau.',
+            type: 'error',
+            position: 'bottom-right'
+        })
+    }
+}
+
+const rejectCourse = async (courseId: number, status: number) => {
+    try {
+        loadingPublicCourse.value = true
+        const response = await updateCourse(courseId, { status })
+        ElNotification({
+            message: 'Đã từ chối xuất bản khóa học.',
+            type: 'success',
+            position: 'bottom-right'
+        })
+        console.log(response)
+        loadingPublicCourse.value = false
+    } catch (error) {
+        ElNotification({
+            message: 'Xuất bản khóa học thất bại. Vui lòng thử lại sau.',
+            type: 'error',
+            position: 'bottom-right'
+        })
+    }
 }
 </script>
